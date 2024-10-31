@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DefaultLayoutComponent } from './Pages/Default/layout/default-layout/default-layout.component';
-import { DashboardComponent } from './Pages/views/dashboard/dashboard.component';
-import { TablesComponent } from './Pages/views/tables/tables.component';
-import { ReportsComponent } from './Pages/views/reports/reports.component';
+import { LayoutComponent } from './shared/components/layout/layout.component';
+import { DashboardComponent } from './bussines/dashboard/dashboard.component';
+import { TablesComponent } from './bussines/tables/tables.component';
+import { ProfileComponent } from './bussines/profile/profile.component'; 
 
 const routes: Routes = [
   {
     path: '',
-    component: DefaultLayoutComponent,
+    component: LayoutComponent, // Cambiado a `component` en lugar de `loadComponent`
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'tables', component: TablesComponent },
-      { path: 'reports', component: ReportsComponent },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      { path: 'profile', component: ProfileComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' } // Redirección al dashboard por defecto
     ]
   }
 ];
@@ -22,6 +22,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-
- }
+export class AppRoutingModule { }
