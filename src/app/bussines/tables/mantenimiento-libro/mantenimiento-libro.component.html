@@ -1,0 +1,116 @@
+<div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+  <div class="w-full max-w-3xl p-6 bg-white rounded-lg shadow-xl">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-gray-700">Crear Libro</h2>
+ <!-- Alerta de éxito -->
+ <div *ngIf="showSuccessAlert" class="mb-4 p-4 bg-green-500 text-white rounded-md">
+  <p>{{ successMessage }}</p>
+</div>
+
+<!-- Alerta de error -->
+<div *ngIf="showErrorAlert" class="mb-4 p-4 bg-red-500 text-white rounded-md">
+  <p>{{ errorMessage }}</p>
+</div>
+    <form (ngSubmit)="onSubmit()" #libroForm="ngForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Título -->
+      <div>
+        <label for="titulo" class="block text-sm font-semibold text-gray-600">Título</label>
+        <input type="text" id="titulo" name="titulo" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.titulo" required />
+      </div>
+
+      <!-- ISBN -->
+      <div>
+        <label for="isbn" class="block text-sm font-semibold text-gray-600">ISBN</label>
+        <input type="text" id="isbn" name="isbn" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.isbn" />
+      </div>
+
+      <!-- Tamaño -->
+      <div>
+        <label for="tamanno" class="block text-sm font-semibold text-gray-600">Tamaño</label>
+        <input type="text" id="tamanno" name="tamanno" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.tamanno" />
+      </div>
+
+      <!-- Descripción -->
+      <div class="md:col-span-2">
+        <label for="descripcion" class="block text-sm font-semibold text-gray-600">Descripción</label>
+        <textarea id="descripcion" name="descripcion" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.descripcion"></textarea>
+      </div>
+
+      <!-- Condición -->
+      <div>
+        <label for="condicion" class="block text-sm font-semibold text-gray-600">Condición</label>
+        <input type="text" id="condicion" name="condicion" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.condicion" />
+      </div>
+
+      <!-- Impresión -->
+      <div>
+        <label for="impresion" class="block text-sm font-semibold text-gray-600">Impresión</label>
+        <input type="text" id="impresion" name="impresion" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.impresion" />
+      </div>
+
+      <!-- Tipo de Tapa -->
+      <div>
+        <label for="tipoTapa" class="block text-sm font-semibold text-gray-600">Tipo de Tapa</label>
+        <input type="text" id="tipoTapa" name="tipoTapa" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.tipoTapa" />
+      </div>
+
+      <!-- Estado (Activo/No Activo) -->
+      <div class="flex items-center">
+        <input type="checkbox" id="estado" name="estado" class="mr-2" [(ngModel)]="libro.estado" />
+        <label for="estado" class="text-sm font-semibold text-gray-600">Estado</label>
+      </div>
+
+      <!-- Subcategoría -->
+      <div>
+        <label for="idSubcategoria" class="block text-sm font-semibold text-gray-600">Subcategoría</label>
+        <input type="number" id="idSubcategoria" name="idSubcategoria"
+          class="border border-gray-300 p-2 w-full rounded-md" [(ngModel)]="libro.idSubcategoria" required />
+      </div>
+
+      <!-- Tipo de Papel -->
+      <div>
+        <label for="idTipoPapel" class="block text-sm font-semibold text-gray-600">Tipo de Papel</label>
+        <input type="number" id="idTipoPapel" name="idTipoPapel" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.idTipoPapel" required />
+      </div>
+
+      <!-- Proveedor -->
+      <div>
+        <label for="idProveedor" class="block text-sm font-semibold text-gray-600">Proveedor</label>
+        <input type="number" id="idProveedor" name="idProveedor" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.idProveedor" required />
+      </div>
+
+      <!-- Precio de Venta -->
+      <div>
+        <label for="precioVenta" class="block text-sm font-semibold text-gray-600">Precio de Venta</label>
+        <input type="number" id="precioVenta" name="precioVenta" class="border border-gray-300 p-2 w-full rounded-md"
+          [(ngModel)]="libro.precioVenta" />
+      </div>
+
+      <div class="md:col-span-2">
+        <label for="imagen" class="block text-sm font-semibold text-gray-600">Imagen</label>
+        <input type="file" id="imagen" name="imagen" class="block w-full text-sm text-gray-500"
+          (change)="onImageSelected($event)" />
+      </div>
+
+      <!-- Botón para enviar el formulario -->
+      <div class="md:col-span-2">
+        <button type="submit"
+          class="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Crear
+          Libro</button>
+      </div>
+      <button type="button"
+      (click)="onClose()"
+      class="w-full md:w-auto px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500">
+      Cancelar
+    </button>
+    </form>
+  </div>
+</div>
