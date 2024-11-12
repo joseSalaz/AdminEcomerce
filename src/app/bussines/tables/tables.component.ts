@@ -31,6 +31,11 @@ export class TablesComponent  implements OnInit{
   ){
 
   }
+  // ngOnChanges(): void {
+  //   if (this.libros) {
+  //     this.formulario.reset(this.libros); 
+  //   }
+  // }
   ngOnInit() {
     this.getLibrosPaginados(this.currentPage);
     this.getSubCategorias()
@@ -43,6 +48,7 @@ export class TablesComponent  implements OnInit{
     // Método para cerrar el modal
     closeModal(): void {
       this.isModalOpen = false;
+      this.libroSeleccionado = null;
       console.log("secierra");
       
     }
