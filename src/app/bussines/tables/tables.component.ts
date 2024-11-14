@@ -4,7 +4,8 @@ import { Libro } from '../../models/libro';
 import { SubCategoriaService } from '../../service/subcategoria.service';
 import { Categoria, SubCategoria } from '../../models/subcategoria';
 import { CategoriaService } from '../../service/categoria.service';
-
+import { forkJoin } from 'rxjs';
+import { Precio } from '../../models/precio';
 @Component({
   selector: 'app-tables',
   templateUrl: './tables.component.html',
@@ -23,7 +24,9 @@ export class TablesComponent  implements OnInit{
   currentPageSubCategorias = 1;  
   isModalOpen: boolean = false;
   libroSeleccionado: Libro | null = null;
-
+  precio: Precio[]=[];  // Inicializa el precio
+  Stock: number = 0; 
+  precioVenta: number=0;
   constructor( 
     private libroService : LibroService,
     private subCategoriaService : SubCategoriaService,
@@ -53,11 +56,28 @@ export class TablesComponent  implements OnInit{
       
     }
 
-      // Método para abrir el modal en modo de edición
-  openEditModal(libro: Libro): void {
-    this.libroSeleccionado = { ...libro };  // Clona el objeto para evitar cambios accidentales
-    this.isModalOpen = true;
-  }
+    openEditModal(libro: Libro): void {
+      this.libroSeleccionado = libro;  // Asignar el libro seleccionado al modal
+      forkJoin({
+        precio: this.libroService.getPrecioById(libro.idLibro),  // Obtener el precio
+        kardex: this.libroService.getStockById(libro.idLibro)    // Obtener el stock
+      }).subscribe({
+        next: (response) => {
+          if (Array.isArray(response.precio) && response.precio.length > 0) {
+            this.precioVenta = response.precio[0].precioVenta;  // Acceder al primer elemento del array
+          } else {
+            console.warn('El precio no se recibió como un objeto esperado');
+          }
+          this.Stock = response.kardex.stock;  // Asignar el stock recibido
+        },
+        error: (err) => {
+          console.error('Error al obtener datos:', err);
+        }
+      });
+      this.isModalOpen = true;  // Abrir el modal
+    }
+    
+    
 
   getLibros() {
     this.libroService.getList().subscribe(

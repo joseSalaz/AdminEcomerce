@@ -2,6 +2,12 @@ import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { LibroService } from '../../../service/libro.service';
 import { Router } from '@angular/router';
 import { Libro } from '../../../models/libro';
+import { SubCategoria } from '../../../models/subcategoria';
+import { SubCategoriaService } from '../../../service/subcategoria.service';
+import { TipoPapelService } from '../../../service/tipo-papel.service';
+import { ProvedorService } from '../../../service/provedor.service';
+import { TipoPapel } from '../../../models/tipo_papel';
+import { Provedor } from '../../../models/provedor';
 
 @Component({
   selector: 'app-mantenimiento-libro',
@@ -9,7 +15,7 @@ import { Libro } from '../../../models/libro';
   styleUrl: './mantenimiento-libro.component.scss'
 })
 export class MantenimientoLibroComponent {
-
+  
   showSuccessAlert: boolean = false;
   showErrorAlert: boolean = false;
   successMessage: string = '';
@@ -31,13 +37,58 @@ export class MantenimientoLibroComponent {
     idTipoPapel: 0,
     idProveedor: 0,
     imagen: '',  
-    precioVenta: undefined,
   };
+  
+  @Input() precioVenta: number = 0;
+  @Input() Stock: number = 0;
+  tiposPapel: TipoPapel[] = [];
+  subCategoria: SubCategoria[]=[];
+  provedor:Provedor[]=[];
 
   imageFile: File | null = null;
   
 
-  constructor(private libroService: LibroService, private router: Router) {}
+  constructor(
+    private libroService: LibroService,
+    private subCategoriaService: SubCategoriaService,
+    private tipoPapelService: TipoPapelService,
+    private provedorService: ProvedorService,
+    private router: Router
+  ) {}
+   
+  ngOnInit(): void {
+    this.loadSubcategorias();
+    this.loadTiposPapel();
+    this.loadProveedores();
+  }
+  
+  loadSubcategorias(): void {
+    this.subCategoriaService.getList().subscribe(
+      (data) => {
+        this.subCategoria = data;
+      },
+      (error) => console.error('Error al cargar subcategorías:', error)
+    );
+  }
+  
+  loadTiposPapel(): void {
+    this.tipoPapelService.getTipoPapel().subscribe(
+      (data) => {
+        this.tiposPapel = data;
+      },
+      (error) => console.error('Error al cargar tipos de papel:', error)
+    );
+  }
+  
+  loadProveedores(): void {
+    this.provedorService.getProveedor().subscribe(
+      (data) => {
+        this.provedor = data;
+      },
+      (error) => console.error('Error al cargar proveedores:', error)
+    );
+  }
+
 
   // Método para seleccionar la imagen
   onImageSelected(event: Event): void {
@@ -58,18 +109,27 @@ export class MantenimientoLibroComponent {
     }
   }
   
+  
+  
+  
 
   onSubmit(): void {
+    
     // Limpiar las alertas antes de enviar el formulario
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
     this.successMessage = '';
     this.errorMessage = '';
+      // Asegurarse de que el precioVenta esté asignado al libro
+    this.Stock = this.Stock;  
+    this.libro.idSubcategoria = Number(this.libro.idSubcategoria);
+    this.libro.idTipoPapel = Number(this.libro.idTipoPapel);
+    this.libro.idProveedor = Number(this.libro.idProveedor);
   
     if (this.libro.idLibro === 0) {
       // Crear nuevo libro (con imagen)
       if (this.imageFile) {
-        this.libroService.createLibro(this.libro, this.imageFile).subscribe(
+        this.libroService.createLibro(this.libro, this.imageFile, this.precioVenta, this.Stock).subscribe(
           (response) => {
             console.log('Libro creado con éxito:', response);
             this.libro.imagen = response.imagen;
@@ -89,8 +149,8 @@ export class MantenimientoLibroComponent {
               idTipoPapel: 0,
               idProveedor: 0,
               imagen: '',
-              precioVenta: undefined,
             };
+            
             this.onClose(); // Cerrar el modal
           },
           (error) => {
@@ -119,6 +179,8 @@ export class MantenimientoLibroComponent {
   
   
 
+  
+
   // Método para cerrar el modal
   onClose() {
     // Restablecer alertas
@@ -126,6 +188,8 @@ export class MantenimientoLibroComponent {
     this.showErrorAlert = false;
     this.successMessage = '';
     this.errorMessage = '';
+    this.precioVenta = 0;
+    this.Stock = 0;
   
     // Restablecer el libro a su estado inicial
     this.libro = {
@@ -142,7 +206,6 @@ export class MantenimientoLibroComponent {
       idTipoPapel: 0,
       idProveedor: 0,
       imagen: '',
-      precioVenta: undefined,
     };
   
     // Emitir evento de cierre

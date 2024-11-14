@@ -53,11 +53,15 @@
       </table>
     </div>
 
-    <!-- Modal para crear libro -->
+ <!-- Modal para crear o editar libro -->
 <div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
   <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
-    <app-mantenimiento-libro  [libro]="libroSeleccionado || { idLibro: 0, titulo: '', isbn: undefined, tamanno: '', descripcion: '', condicion: '', impresion: '', tipoTapa: '', estado: true, idSubcategoria: 0, idTipoPapel: 0, idProveedor: 0, imagen: '', precioVenta: undefined }"
-     (close)="closeModal()"></app-mantenimiento-libro>
+    <app-mantenimiento-libro
+      [precioVenta]="precioVenta"
+      [Stock]="Stock"
+      [libro]="libroSeleccionado || { idLibro: 0, titulo: '', isbn: undefined, tamanno: '', descripcion: '', condicion: '', impresion: '', tipoTapa: '', estado: true, idSubcategoria: 0, idTipoPapel: 0, idProveedor: 0, imagen: '' }"
+      (close)="closeModal()">
+    </app-mantenimiento-libro>
   </div>
 </div>
     

@@ -3,6 +3,8 @@ import { environment } from '../environments/environments';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Libro } from '../models/libro';
 import { map, Observable } from 'rxjs';
+import { Precio } from '../models/precio';
+import { Kardex } from '../models/kardex';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ import { map, Observable } from 'rxjs';
 export class LibroService {
   private endPoint = environment.endPoint;
   private apiUrl = this.endPoint + "Libro";
-
+  
 
   constructor(
     private http : HttpClient
@@ -36,11 +38,17 @@ export class LibroService {
       map(response => response.libros) 
     );
   }
-
+  getPrecioById(id: number): Observable<Precio> {
+    return this.http.get<Precio>(`${this.apiUrl}/precios/${id}`);
+  }
   
-  createLibro(libro: Libro, imageFile: File): Observable<any> {
+  getStockById(id: number): Observable<Kardex> {
+    return this.http.get<Kardex>(`${this.apiUrl}/kardex/${id}`);
+  }
+  
+  createLibro(libro: Libro, imageFile: File, precioVenta: number, stock: number ): Observable<any> {
     const formData = new FormData();
-
+    
     // Agregar los campos del libro al FormData
     formData.append('titulo', libro.titulo || '');
     formData.append('isbn', libro.isbn?.toString() || '');
@@ -53,13 +61,14 @@ export class LibroService {
     formData.append('idSubcategoria', libro.idSubcategoria.toString());
     formData.append('idTipoPapel', libro.idTipoPapel.toString());
     formData.append('idProveedor', libro.idProveedor.toString());
-
+  
+    
     // Agregar el archivo de imagen al FormData
     if (imageFile) {
         formData.append('imageFile', imageFile, imageFile.name);
     }
 
     // Enviar los datos al backend
-    return this.http.post(`${this.apiUrl}/create-with-image-firebase`, formData);
+    return this.http.post(`${this.apiUrl}/create-with-image-firebase?precioVenta=${precioVenta}&stock=${stock}`, formData);
 }
 }

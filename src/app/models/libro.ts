@@ -12,5 +12,5 @@ export interface Libro {
     idTipoPapel: number;
     idProveedor: number;
     imagen: string ;
-    precioVenta?: number;
+   
 }

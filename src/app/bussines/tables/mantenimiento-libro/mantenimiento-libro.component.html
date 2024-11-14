@@ -66,34 +66,42 @@
         <label for="estado" class="text-sm font-semibold text-gray-600">Estado</label>
       </div>
 
-      <!-- Subcategoría -->
-      <div>
-        <label for="idSubcategoria" class="block text-sm font-semibold text-gray-600">Subcategoría</label>
-        <input type="number" id="idSubcategoria" name="idSubcategoria"
-          class="border border-gray-300 p-2 w-full rounded-md" [(ngModel)]="libro.idSubcategoria" required />
-      </div>
+   <!-- Subcategoría -->
+<div>
+  <label for="idSubcategoria">Subcategoría:</label>
+  <select id="idSubcategoria" [(ngModel)]="libro.idSubcategoria" name="idSubcategoria" required>
+    <option *ngFor="let sub of subCategoria" [value]="sub.id">{{ sub.descripcion }}</option>
+  </select>
+</div>
 
-      <!-- Tipo de Papel -->
-      <div>
-        <label for="idTipoPapel" class="block text-sm font-semibold text-gray-600">Tipo de Papel</label>
-        <input type="number" id="idTipoPapel" name="idTipoPapel" class="border border-gray-300 p-2 w-full rounded-md"
-          [(ngModel)]="libro.idTipoPapel" required />
-      </div>
+<!-- Tipo de Papel -->
+<div>
+  <label for="idTipoPapel">Tipo de Papel:</label>
+  <select id="idTipoPapel" [(ngModel)]="libro.idTipoPapel" name="idTipoPapel" required>
+    <option *ngFor="let tipo of tiposPapel" [value]="tipo.idTipoPapel">{{ tipo.descripcion }}</option>
+  </select>
+</div>
 
-      <!-- Proveedor -->
-      <div>
-        <label for="idProveedor" class="block text-sm font-semibold text-gray-600">Proveedor</label>
-        <input type="number" id="idProveedor" name="idProveedor" class="border border-gray-300 p-2 w-full rounded-md"
-          [(ngModel)]="libro.idProveedor" required />
-      </div>
+<!-- Proveedor -->
+<div>
+  <label for="idProveedor">Proveedor:</label>
+  <select id="idProveedor" [(ngModel)]="libro.idProveedor" name="idProveedor" required>
+    <option *ngFor="let prov of provedor" [value]="prov.idProveedor">{{ prov.razonSocial }}</option>
+  </select>
+</div>
+<!-- Precio de Venta -->
+<div>
+  <label for="precioVenta" class="block text-sm font-semibold text-gray-600">Precio de Venta</label>
+  <input type="number" id="precioVenta" name="precioVenta" class="border border-gray-300 p-2 w-full rounded-md" [(ngModel)]="precioVenta" required />
+</div>
 
-      <!-- Precio de Venta -->
-      <div>
-        <label for="precioVenta" class="block text-sm font-semibold text-gray-600">Precio de Venta</label>
-        <input type="number" id="precioVenta" name="precioVenta" class="border border-gray-300 p-2 w-full rounded-md"
-          [(ngModel)]="libro.precioVenta" />
-      </div>
+<!-- Stock -->
+<div>
+  <label for="Stock" class="block text-sm font-semibold text-gray-600">Stock</label>
+  <input type="number" id="Stock" name="Stock" class="border border-gray-300 p-2 w-full rounded-md" [(ngModel)]="Stock" required />
+</div>
 
+ 
       <div class="md:col-span-2">
         <label for="imagen" class="block text-sm font-semibold text-gray-600">Imagen</label>
         <input type="file" id="imagen" name="imagen" class="block w-full text-sm text-gray-500"
