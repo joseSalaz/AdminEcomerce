@@ -21,13 +21,13 @@ export class LibroService {
   getList(): Observable<Libro[]> {
     return this.http.get<Libro[]>(`${this.apiUrl}`);
   }
-  updateLibro(libro: Libro) {
-    return this.http.put<Libro>(`${this.apiUrl}`, libro, {
-      headers: {
-        'Content-Type': 'application/json'  // Asegúrate de que el encabezado es JSON
-      }
-    });
-  }
+  // updateLibro(libro: Libro, precioVenta: number, stock: number) {
+  //   return this.http.put<Libro>(`${this.apiUrl}?precioVenta=${precioVenta}&stock=${stock}`, libro, {
+  //     headers: {
+  //       'Content-Type': 'application/json'  // Asegúrate de que el encabezado es JSON
+  //     }
+  //   });
+  // }
 
   getPaginatedLibros(page: number, pageSize: number): Observable<Libro[]> {
     const params = new HttpParams()
@@ -71,4 +71,28 @@ export class LibroService {
     // Enviar los datos al backend
     return this.http.post(`${this.apiUrl}/create-with-image-firebase?precioVenta=${precioVenta}&stock=${stock}`, formData);
 }
+
+
+updateLibro(libro: Libro, precioVenta: number, stock: number): Observable<any> {
+  const formData = new FormData();
+  
+  // Agregar los campos del libro al FormData
+  formData.append('idLibro',libro.idLibro.toString() || '');
+  formData.append('titulo', libro.titulo || '');
+  formData.append('isbn', libro.isbn?.toString() || '');
+  formData.append('tamanno', libro.tamanno || '');
+  formData.append('descripcion', libro.descripcion || '');
+  formData.append('condicion', libro.condicion || '');
+  formData.append('impresion', libro.impresion || '');
+  formData.append('tipoTapa', libro.tipoTapa || '');
+  formData.append('estado', libro.estado?.toString() || 'true');
+  formData.append('idSubcategoria', libro.idSubcategoria.toString());
+  formData.append('idTipoPapel', libro.idTipoPapel.toString());
+  formData.append('idProveedor', libro.idProveedor.toString());
+
+  // Realizar la petición PUT al backend, pasando los parámetros precioVenta y stock en la URL
+  return this.http.put(`${this.apiUrl}?precioVenta=${precioVenta}&stock=${stock}`, formData);
+}
+
+
 }

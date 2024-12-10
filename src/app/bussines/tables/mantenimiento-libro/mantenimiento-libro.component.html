@@ -1,124 +1,161 @@
 <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-  <div class="w-full max-w-3xl p-6 bg-white rounded-lg shadow-xl">
-    <h2 class="text-2xl font-semibold mb-6 text-center text-gray-700">Crear Libro</h2>
- <!-- Alerta de éxito -->
- <div *ngIf="showSuccessAlert" class="mb-4 p-4 bg-green-500 text-white rounded-md">
-  <p>{{ successMessage }}</p>
-</div>
+  <div
+    class="w-full max-w-3xl p-6 bg-white rounded-lg shadow-xl transform transition-all duration-300 overflow-y-auto max-h-[90vh]">
+    <h2 class="text-3xl font-semibold mb-8 text-center text-gray-700">Crear/Editar Libro</h2>
 
-<!-- Alerta de error -->
-<div *ngIf="showErrorAlert" class="mb-4 p-4 bg-red-500 text-white rounded-md">
-  <p>{{ errorMessage }}</p>
-</div>
-    <form (ngSubmit)="onSubmit()" #libroForm="ngForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Alerta de éxito -->
+    <div *ngIf="showSuccessAlert" class="mb-4 p-4 bg-green-500 text-white rounded-md shadow-md">
+      <p>{{ successMessage }}</p>
+    </div>
+
+    <!-- Alerta de error -->
+    <div *ngIf="showErrorAlert" class="mb-4 p-4 bg-red-500 text-white rounded-md shadow-md">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #libroForm="ngForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
       <!-- Título -->
       <div>
-        <label for="titulo" class="block text-sm font-semibold text-gray-600">Título</label>
-        <input type="text" id="titulo" name="titulo" class="border border-gray-300 p-2 w-full rounded-md"
+        <label for="titulo" class="block text-sm font-medium text-gray-700">Título</label>
+        <input type="text" id="titulo" name="titulo"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           [(ngModel)]="libro.titulo" required />
       </div>
 
       <!-- ISBN -->
       <div>
-        <label for="isbn" class="block text-sm font-semibold text-gray-600">ISBN</label>
-        <input type="text" id="isbn" name="isbn" class="border border-gray-300 p-2 w-full rounded-md"
+        <label for="isbn" class="block text-sm font-medium text-gray-700">ISBN</label>
+        <input type="text" id="isbn" name="isbn"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           [(ngModel)]="libro.isbn" />
       </div>
 
       <!-- Tamaño -->
       <div>
-        <label for="tamanno" class="block text-sm font-semibold text-gray-600">Tamaño</label>
-        <input type="text" id="tamanno" name="tamanno" class="border border-gray-300 p-2 w-full rounded-md"
+        <label for="tamanno" class="block text-sm font-medium text-gray-700">Tamaño</label>
+        <input type="text" id="tamanno" name="tamanno"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           [(ngModel)]="libro.tamanno" />
       </div>
 
       <!-- Descripción -->
       <div class="md:col-span-2">
-        <label for="descripcion" class="block text-sm font-semibold text-gray-600">Descripción</label>
-        <textarea id="descripcion" name="descripcion" class="border border-gray-300 p-2 w-full rounded-md"
+        <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+        <textarea id="descripcion" name="descripcion"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           [(ngModel)]="libro.descripcion"></textarea>
       </div>
 
       <!-- Condición -->
       <div>
-        <label for="condicion" class="block text-sm font-semibold text-gray-600">Condición</label>
-        <input type="text" id="condicion" name="condicion" class="border border-gray-300 p-2 w-full rounded-md"
+        <label for="condicion" class="block text-sm font-medium text-gray-700">Condición</label>
+        <input type="text" id="condicion" name="condicion"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           [(ngModel)]="libro.condicion" />
       </div>
 
       <!-- Impresión -->
       <div>
-        <label for="impresion" class="block text-sm font-semibold text-gray-600">Impresión</label>
-        <input type="text" id="impresion" name="impresion" class="border border-gray-300 p-2 w-full rounded-md"
+        <label for="impresion" class="block text-sm font-medium text-gray-700">Impresión</label>
+        <input type="text" id="impresion" name="impresion"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           [(ngModel)]="libro.impresion" />
       </div>
 
       <!-- Tipo de Tapa -->
       <div>
-        <label for="tipoTapa" class="block text-sm font-semibold text-gray-600">Tipo de Tapa</label>
-        <input type="text" id="tipoTapa" name="tipoTapa" class="border border-gray-300 p-2 w-full rounded-md"
+        <label for="tipoTapa" class="block text-sm font-medium text-gray-700">Tipo de Tapa</label>
+        <input type="text" id="tipoTapa" name="tipoTapa"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           [(ngModel)]="libro.tipoTapa" />
       </div>
 
-      <!-- Estado (Activo/No Activo) -->
+      <!-- Estado -->
       <div class="flex items-center">
-        <input type="checkbox" id="estado" name="estado" class="mr-2" [(ngModel)]="libro.estado" />
-        <label for="estado" class="text-sm font-semibold text-gray-600">Estado</label>
+        <input type="checkbox" id="estado" name="estado" class="mr-2 focus:ring-blue-500" [(ngModel)]="libro.estado" />
+        <label for="estado" class="text-sm font-medium text-gray-700">Estado</label>
       </div>
 
-   <!-- Subcategoría -->
-<div>
-  <label for="idSubcategoria">Subcategoría:</label>
-  <select id="idSubcategoria" [(ngModel)]="libro.idSubcategoria" name="idSubcategoria" required>
-    <option *ngFor="let sub of subCategoria" [value]="sub.id">{{ sub.descripcion }}</option>
-  </select>
+      <!-- Subcategoría -->
+      <div>
+        <label for="idSubcategoria" class="block text-sm font-medium text-gray-700">Subcategoría:</label>
+        <select id="idSubcategoria" [(ngModel)]="libro.idSubcategoria" name="idSubcategoria" required
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option *ngFor="let sub of subCategoria" [value]="sub.id">{{ sub.descripcion }}</option>
+        </select>
+      </div>
+
+      <!-- Tipo de Papel -->
+      <div>
+        <label for="idTipoPapel" class="block text-sm font-medium text-gray-700">Tipo de Papel:</label>
+        <select id="idTipoPapel" [(ngModel)]="libro.idTipoPapel" name="idTipoPapel" required
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option *ngFor="let tipo of tiposPapel" [value]="tipo.idTipoPapel">{{ tipo.descripcion }}</option>
+        </select>
+      </div>
+
+      <!-- Proveedor -->
+      <div>
+        <label for="idProveedor" class="block text-sm font-medium text-gray-700">Proveedor:</label>
+        <select id="idProveedor" [(ngModel)]="libro.idProveedor" name="idProveedor" required
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option *ngFor="let prov of provedor" [value]="prov.idProveedor">{{ prov.razonSocial }}</option>
+        </select>
+      </div>
+
+      <!-- Precio de Venta -->
+      <div>
+        <label for="precioVenta" class="block text-sm font-medium text-gray-700">Precio de Venta</label>
+        <input type="number" id="precioVenta" name="precioVenta"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [(ngModel)]="precioVenta" required />
+      </div>
+
+      <!-- Stock -->
+      <div>
+        <label for="Stock" class="block text-sm font-medium text-gray-700">Stock</label>
+        <input type="number" id="Stock" name="Stock"
+          class="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [(ngModel)]="Stock" required />
+      </div>
+<!-- Previsualización de la imagen -->
+<div *ngIf="imageUrl" class="md:col-span-2 mb-4">
+  <label class="block text-sm font-medium text-gray-700">Imagen Previsualizada</label>
+  <div class="w-full max-w-lg h-72 rounded-md overflow-hidden relative">
+    <!-- Imagen ajustada al contenedor -->
+    <img [src]="imageUrl" alt="Imagen Previsualizada" class="w-full h-full object-contain" />
+    <!-- Botón para borrar la imagen -->
+    <button (click)="removeImage()"
+    class="absolute top-2 right-2 bg-transparent text-red-500 rounded-full p-2 hover:bg-gray-100 focus:outline-none">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+  
+
+  </div>
 </div>
 
-<!-- Tipo de Papel -->
-<div>
-  <label for="idTipoPapel">Tipo de Papel:</label>
-  <select id="idTipoPapel" [(ngModel)]="libro.idTipoPapel" name="idTipoPapel" required>
-    <option *ngFor="let tipo of tiposPapel" [value]="tipo.idTipoPapel">{{ tipo.descripcion }}</option>
-  </select>
-</div>
-
-<!-- Proveedor -->
-<div>
-  <label for="idProveedor">Proveedor:</label>
-  <select id="idProveedor" [(ngModel)]="libro.idProveedor" name="idProveedor" required>
-    <option *ngFor="let prov of provedor" [value]="prov.idProveedor">{{ prov.razonSocial }}</option>
-  </select>
-</div>
-<!-- Precio de Venta -->
-<div>
-  <label for="precioVenta" class="block text-sm font-semibold text-gray-600">Precio de Venta</label>
-  <input type="number" id="precioVenta" name="precioVenta" class="border border-gray-300 p-2 w-full rounded-md" [(ngModel)]="precioVenta" required />
-</div>
-
-<!-- Stock -->
-<div>
-  <label for="Stock" class="block text-sm font-semibold text-gray-600">Stock</label>
-  <input type="number" id="Stock" name="Stock" class="border border-gray-300 p-2 w-full rounded-md" [(ngModel)]="Stock" required />
-</div>
-
- 
+      <!-- Imagen -->
       <div class="md:col-span-2">
-        <label for="imagen" class="block text-sm font-semibold text-gray-600">Imagen</label>
-        <input type="file" id="imagen" name="imagen" class="block w-full text-sm text-gray-500"
+        <label for="imagen" class="block text-sm font-medium text-gray-700">Imagen</label>
+        <input type="file" id="imagen" name="imagen" class="block w-full text-sm text-gray-500 focus:outline-none"
           (change)="onImageSelected($event)" />
       </div>
 
-      <!-- Botón para enviar el formulario -->
-      <div class="md:col-span-2">
+
+      <!-- Botones -->
+      <div class="md:col-span-2 flex justify-end gap-4">
+        <button type="button" (click)="onClose()"
+          class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          Cancelar
+        </button>
         <button type="submit"
-          class="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Crear
-          Libro</button>
+          class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Crear/Editar Libro
+        </button>
       </div>
-      <button type="button"
-      (click)="onClose()"
-      class="w-full md:w-auto px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500">
-      Cancelar
-    </button>
     </form>
   </div>
 </div>

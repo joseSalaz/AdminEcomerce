@@ -46,13 +46,16 @@ export class TablesComponent  implements OnInit{
     // Método para abrir el modal
     openCreateModal(): void {
       this.isModalOpen = true;
+      document.body.classList.add('overflow-hidden'); // Bloquear scroll
     }
   
     // Método para cerrar el modal
     closeModal(): void {
       this.isModalOpen = false;
       this.libroSeleccionado = null;
-      console.log("secierra");
+      this.precioVenta = 0;
+      this.Stock=0;
+      document.body.classList.remove('overflow-hidden'); // Habilitar scroll
       
     }
 
@@ -77,8 +80,6 @@ export class TablesComponent  implements OnInit{
       this.isModalOpen = true;  // Abrir el modal
     }
     
-    
-
   getLibros() {
     this.libroService.getList().subscribe(
       (data: Libro[]) => {

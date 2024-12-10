@@ -21,6 +21,8 @@ export class MantenimientoLibroComponent {
   successMessage: string = '';
   errorMessage: string = '';
   @Output() close = new EventEmitter<void>();
+
+  imageUrl: string | ArrayBuffer | null = null;
   
 
   @Input() libro: Libro = {
@@ -90,13 +92,30 @@ export class MantenimientoLibroComponent {
   }
 
 
-  // Método para seleccionar la imagen
-  onImageSelected(event: Event): void {
+  onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input?.files?.length) {
-      this.imageFile = input.files[0];
+      const file = input.files[0];
+      this.imageFile = file;  // Asignar el archivo a imageFile
+  
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imageUrl = e.target?.result as string;  // Mostrar la imagen seleccionada
+      };
+      reader.readAsDataURL(file);
     }
   }
+  
+
+  // Función para eliminar la imagen y resetear el input
+  removeImage() {
+    this.imageUrl = null; // Eliminar la imagen
+    const input = document.getElementById('imagen') as HTMLInputElement;
+    if (input) {
+      input.value = ''; // Restablecer el valor del input de archivo
+    }
+  }
+
   showAlert(type: 'success' | 'error', message: string) {
     if (type === 'success') {
       this.successMessage = message;
@@ -109,18 +128,14 @@ export class MantenimientoLibroComponent {
     }
   }
   
-  
-  
-  
-
   onSubmit(): void {
-    
     // Limpiar las alertas antes de enviar el formulario
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
     this.successMessage = '';
     this.errorMessage = '';
-      // Asegurarse de que el precioVenta esté asignado al libro
+  
+    // Asegurarse de que el precioVenta esté asignado al libro
     this.Stock = this.Stock;  
     this.libro.idSubcategoria = Number(this.libro.idSubcategoria);
     this.libro.idTipoPapel = Number(this.libro.idTipoPapel);
@@ -150,7 +165,7 @@ export class MantenimientoLibroComponent {
               idProveedor: 0,
               imagen: '',
             };
-            
+  
             this.onClose(); // Cerrar el modal
           },
           (error) => {
@@ -163,9 +178,11 @@ export class MantenimientoLibroComponent {
       }
     } else {
       // Editar libro existente (sin enviar imagen)
-      this.libroService.updateLibro(this.libro).subscribe(
+      this.libroService.updateLibro(this.libro,this.precioVenta, this.Stock).subscribe(
         (response) => {
           console.log('Libro editado con éxito:', response);
+          console.log("stock ==",this.Stock,"precioVenta==",this.precioVenta);
+          
           this.showAlert('success', 'Libro editado con éxito.');
           this.onClose(); // Cerrar el modal
         },
@@ -177,8 +194,6 @@ export class MantenimientoLibroComponent {
     }
   }
   
-  
-
   
 
   // Método para cerrar el modal
