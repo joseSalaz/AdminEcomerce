@@ -1,0 +1,64 @@
+<div class="fixed inset-0 bg-gray-800 bg-opacity-60 flex items-center justify-center z-50">
+  <div class="bg-white w-96 p-8 rounded-lg shadow-xl transform transition-all scale-95 hover:scale-100 duration-300">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Crear Autor</h2>
+    <form (ngSubmit)="crearAutor()" #form="ngForm">
+      <div class="mb-4">
+        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
+        <input
+          id="nombre"
+          type="text"
+          [(ngModel)]="nuevoAutor.nombre"
+          name="nombre"
+          required
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido:</label>
+        <input
+          id="apellido"
+          type="text"
+          [(ngModel)]="nuevoAutor.apellido"
+          name="apellido"
+          required
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="codigo" class="block text-sm font-medium text-gray-700">Codigo:</label>
+        <input
+          id="codigo"
+          type="text"
+          [(ngModel)]="nuevoAutor.codigo"
+          name="codigo"
+          required
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out"
+        />
+      </div>
+      <div class="mb-6">
+        <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripcion:</label>
+        <input
+          id="descripcion"
+          type="text"
+          [(ngModel)]="nuevoAutor.descripcion"
+          name="descripcion"
+          required
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out"
+        />
+      </div>
+      <div class="flex justify-end gap-4">
+        <button
+          type="button"
+          (click)="cerrarModalHandler()"
+          class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 focus:outline-none transition duration-300 ease-in-out">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 focus:outline-none transition duration-300 ease-in-out">
+          Crear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
+  <!-- Campo de descripción -->
+  <div>
+    <label for="descripcion" class="block text-sm font-semibold text-gray-700">Descripción</label>
+    <input
+      id="descripcion"
+      type="text"
+      [(ngModel)]="subcategoria.descripcion"
+      class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 sm:text-sm"
+      placeholder="Ingresa la descripción"
+    />
+  </div>
+
+  <!-- Selección de categoría -->
+  <div>
+    <label for="categoria" class="block text-sm font-semibold text-gray-700">Categoría</label>
+    <select
+      id="categoria"
+      [(ngModel)]="subcategoria.idCategoria"
+      class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-blue-700 focus:border-blue-700 sm:text-sm"
+    >
+      <option *ngFor="let categoria of categorias" [value]="categoria.idCategoria">
+        {{ categoria.categoria1 }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="flex justify-end space-x-3">
+    <button
+      (click)="closeModal()"
+      class="px-5 py-2 bg-gray-500 text-white font-semibold rounded-xl hover:bg-gray-600 transition-all"
+    >
+      Cancelar
+    </button>
+    <button
+      (click)="onSubmit()"
+      class="px-5 py-2 bg-blue-800 text-white font-semibold rounded-xl hover:bg-blue-900 transition-all"
+    >
+      Guardar
+    </button>
+  </div>
+</div>

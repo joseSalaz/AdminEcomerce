@@ -5,6 +5,10 @@ import { Libro } from '../models/libro';
 import { map, Observable } from 'rxjs';
 import { Precio } from '../models/precio';
 import { Kardex } from '../models/kardex';
+import { Libroconautor } from '../models/libroConAutor';
+
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -46,53 +50,33 @@ export class LibroService {
     return this.http.get<Kardex>(`${this.apiUrl}/kardex/${id}`);
   }
   
-  createLibro(libro: Libro, imageFile: File, precioVenta: number, stock: number ): Observable<any> {
-    const formData = new FormData();
-    
-    // Agregar los campos del libro al FormData
-    formData.append('titulo', libro.titulo || '');
-    formData.append('isbn', libro.isbn?.toString() || '');
-    formData.append('tamanno', libro.tamanno || '');
-    formData.append('descripcion', libro.descripcion || '');
-    formData.append('condicion', libro.condicion || '');
-    formData.append('impresion', libro.impresion || '');
-    formData.append('tipoTapa', libro.tipoTapa || '');
-    formData.append('estado', libro.estado?.toString() || 'true');
-    formData.append('idSubcategoria', libro.idSubcategoria.toString());
-    formData.append('idTipoPapel', libro.idTipoPapel.toString());
-    formData.append('idProveedor', libro.idProveedor.toString());
+  createLibro(formData: FormData, precioVenta: number, stock: number): Observable<any> {
+    const url = `${this.apiUrl}/create-with-image-firebase?precioVenta=${precioVenta}&stock=${stock}`;
+    return this.http.post(url, formData);
+  }
   
-    
-    // Agregar el archivo de imagen al FormData
-    if (imageFile) {
-        formData.append('imageFile', imageFile, imageFile.name);
+
+
+  updateLibro(formData: FormData, precioVenta: number, stock: number): Observable<any> {
+    // Realizar la petición PUT al backend, pasando los parámetros precioVenta y stock en la URL
+    return this.http.put(`${this.apiUrl}?precioVenta=${precioVenta}&stock=${stock}`, formData);
+  }
+  
+  updateestado(id:number){
+    return this.http.put(`${this.apiUrl}/cambiar-estado/${id}`,id)
+  }
+
+  filtrarLibros(estado?: boolean, titulo?: string, page: number = 1, pageSize: number = 10): Observable<any> {
+    let params: any = { page, pageSize };
+  
+    if (estado !== undefined) {
+      params.estado = estado;
     }
-
-    // Enviar los datos al backend
-    return this.http.post(`${this.apiUrl}/create-with-image-firebase?precioVenta=${precioVenta}&stock=${stock}`, formData);
-}
-
-
-updateLibro(libro: Libro, precioVenta: number, stock: number): Observable<any> {
-  const formData = new FormData();
+    if (titulo) {
+      params.titulo = titulo;
+    }
   
-  // Agregar los campos del libro al FormData
-  formData.append('idLibro',libro.idLibro.toString() || '');
-  formData.append('titulo', libro.titulo || '');
-  formData.append('isbn', libro.isbn?.toString() || '');
-  formData.append('tamanno', libro.tamanno || '');
-  formData.append('descripcion', libro.descripcion || '');
-  formData.append('condicion', libro.condicion || '');
-  formData.append('impresion', libro.impresion || '');
-  formData.append('tipoTapa', libro.tipoTapa || '');
-  formData.append('estado', libro.estado?.toString() || 'true');
-  formData.append('idSubcategoria', libro.idSubcategoria.toString());
-  formData.append('idTipoPapel', libro.idTipoPapel.toString());
-  formData.append('idProveedor', libro.idProveedor.toString());
-
-  // Realizar la petición PUT al backend, pasando los parámetros precioVenta y stock en la URL
-  return this.http.put(`${this.apiUrl}?precioVenta=${precioVenta}&stock=${stock}`, formData);
-}
-
-
+    return this.http.get<any>(`${this.apiUrl}/filtrar`, { params });
+  }
+  
 }

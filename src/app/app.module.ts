@@ -16,6 +16,22 @@ import { TablesComponent } from './bussines/tables/tables.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MantenimientoLibroComponent } from './bussines/tables/mantenimiento-libro/mantenimiento-libro.component';
 import { FormsModule } from '@angular/forms';
+import { MatenimientoAutorComponent } from './bussines/tables/matenimiento-autor/matenimiento-autor.component';
+import { MatenimientoSubCategoriaComponent } from './bussines/tables/matenimiento-sub-categoria/matenimiento-sub-categoria.component';
+import { LoginComponent } from './bussines/profile/login/login.component';
+import { GraficoProductosComponent } from './bussines/dashboard/grafico-productos/grafico-productos.component';
+import { NgChartsModule } from 'ng2-charts';
+import { DashboardComponent } from './bussines/dashboard/dashboard.component';
+import { NotificacionesComponent } from './bussines/notificaciones/notificaciones.component';
+import { GraficoVentasPorMesComponent } from './bussines/dashboard/grafico-ventas-por-mes/grafico-ventas-por-mes.component';
+import { PersonaComponent } from './bussines/profile/persona/persona.component';
+import { UsuarioComponent } from './bussines/profile/usuario/usuario.component';
+import { CommonModule } from '@angular/common';
+import { ProfileComponent } from './bussines/profile/profile.component';
+
+
+
+
 
 @NgModule({
   declarations: [
@@ -25,8 +41,19 @@ import { FormsModule } from '@angular/forms';
     LayoutComponent,
     SidebarComponent,
     TablesComponent,
-    MantenimientoLibroComponent
+    MantenimientoLibroComponent,
+    MatenimientoAutorComponent,
+    MatenimientoSubCategoriaComponent,
+    LoginComponent,
+    GraficoProductosComponent,
+    DashboardComponent,
+    NotificacionesComponent,
+    GraficoVentasPorMesComponent,
+    PersonaComponent,
+    UsuarioComponent,
+    ProfileComponent
     
+
   ],
   imports: [
     BrowserModule,
@@ -34,9 +61,9 @@ import { FormsModule } from '@angular/forms';
     RouterModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule
-    
-  
+    FormsModule,
+    NgChartsModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent],

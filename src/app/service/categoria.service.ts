@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../environments/environments';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Categoria } from '../models/subcategoria';
 
 @Injectable({
   providedIn: 'root'
@@ -15,4 +16,9 @@ export class CategoriaService {
   getCategoriaById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl+"/"}${id}`);
   }
+
+  getCategorias(): Observable<Categoria[]>{
+      return this.http.get<Categoria[]>(`${this.apiUrl}`);
+    }
+
 }

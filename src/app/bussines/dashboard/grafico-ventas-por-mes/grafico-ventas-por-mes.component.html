@@ -1,0 +1,59 @@
+<div class="p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">📊 Ingresos Mensuales</h2>
+  
+    <!-- Selección de Fechas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div class="flex flex-col items-center">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Mes de Inicio</label>
+        <select [(ngModel)]="mesInicio" (change)="cargarDatos()"
+        class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
+          <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
+        </select>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Año de Inicio</label>
+        <select [(ngModel)]="anioInicio" (change)="cargarDatos()"
+        class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
+          <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+        </select>
+      </div>
+  
+      <div class="flex flex-col items-center">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Mes de Fin</label>
+        <select [(ngModel)]="mesFin" (change)="cargarDatos()"
+               class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
+          <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
+        </select>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Año de Fin</label>
+        <select [(ngModel)]="anioFin" (change)="cargarDatos()"
+               class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
+          <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+        </select>
+      </div>
+    </div>
+  
+    <!-- Gráfico -->
+    <div class="relative w-full h-96 bg-gray-50 p-4 rounded-lg shadow-inner flex justify-center items-center">
+      <canvas *ngIf="chartData?.datasets?.length && chartData.datasets[0].data.length > 0" 
+              baseChart
+              [data]="chartData"
+              [options]="chartOptions"
+              [type]="'bar'">
+      </canvas>
+      <div *ngIf="!chartData?.datasets?.length || chartData.datasets[0].data.length === 0" 
+           class="text-gray-500 text-center">
+        No hay datos disponibles para el período seleccionado.
+      </div>
+    </div>
+  
+    <!-- Conclusión -->
+    <div class="mt-6 p-4 bg-gray-100 rounded-lg text-center text-gray-800 font-semibold">
+      <p *ngIf="chartData.datasets[0].data.length > 0">
+        📌 El mes con más ventas es <span class="text-blue-600">{{ obtenerMesMasVendido() }}</span> 📈
+      </p>
+    </div>
+  </div>

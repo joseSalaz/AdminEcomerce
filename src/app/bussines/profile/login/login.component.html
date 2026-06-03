@@ -1,0 +1,60 @@
+<div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50">
+  <div class="relative bg-white shadow-2xl p-10 rounded-3xl w-full max-w-2xl transform transition-all duration-300 hover:shadow-3xl">
+    <!-- Elementos decorativos de fondo -->
+    <div class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-blue-100 opacity-50 blur-3xl"></div>
+    <div class="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-violet-100 opacity-50 blur-3xl"></div>
+
+    <!-- Título de bienvenida -->
+    <div class="relative z-10 text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">
+        Bienvenido a
+      </h1>
+      <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent mt-2">
+        Librería Saber Admin
+      </h1>
+    </div>
+
+    <!-- Logo -->
+    <div class="relative z-10 flex justify-center mb-8">
+      <div class="relative overflow-hidden rounded-lg bg-white shadow-lg p-2">
+        <img src="https://firebasestorage.googleapis.com/v0/b/ecomercesa-3c1ff.appspot.com/o/Libreria-Saber.logo_.jpg?alt=media&token=081305b5-8cec-42ac-bc8c-93bf23c105f1"
+          alt="Logo Librería Saber" 
+          class="w-32 h-32 object-contain">
+      </div>
+    </div>
+
+    <!-- Formulario de inicio de sesión -->
+    <div class="relative z-10">
+      <h2 class="text-2xl font-semibold text-gray-700 mb-8 text-center">Iniciar Sesión</h2>
+
+      <!-- Campo de usuario -->
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Usuario</label>
+        <input [(ngModel)]="username" 
+          type="text" 
+          placeholder="Ingresa tu usuario"
+          class="w-full p-4 border-2 border-gray-200 bg-gray-50 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg">
+      </div>
+
+      <!-- Campo de contraseña -->
+      <div class="mb-8">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+        <input [(ngModel)]="password" 
+          type="password" 
+          placeholder="Ingresa tu contraseña"
+          class="w-full p-4 border-2 border-gray-200 bg-gray-50 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg">
+      </div>
+
+      <!-- Botón de inicio de sesión -->
+      <button (click)="login()" 
+        class="w-full relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-4 text-white text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:from-blue-700 hover:to-violet-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50">
+        Iniciar sesión
+      </button>
+
+      <!-- Mensaje de error -->
+      <p *ngIf="errorMessage" class="text-red-500 mt-6 text-sm text-center bg-red-50 p-4 rounded-lg">
+        {{ errorMessage }}
+      </p>
+    </div>
+  </div>
+</div>

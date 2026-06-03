@@ -1,0 +1,110 @@
+<div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">
+            {{ esEdicion ? 'Editar Usuario' : 'Crear Usuario' }}
+        </h2>
+
+        <form #usuarioForm="ngForm">
+            <!-- Username -->
+            <input type="text" [(ngModel)]="usuario.username" name="username" required #username="ngModel"
+                class="border p-2 w-full rounded-lg focus:ring-2 mb-2"
+                [class.border-red-500]="username.invalid && username.touched" [class.border-green-500]="username.valid"
+                [placeholder]="username.invalid && username.touched ? 'Este campo es requerido' : 'Username'">
+
+            <!-- Password con botón de visibilidad -->
+            <div class="relative w-full">
+                <!-- Input de contraseña -->
+                <input 
+                    [type]="mostrarPassword ? 'text' : 'password'"
+                    [value]="mostrarPassword && esEdicion ? passwordDesencriptada || usuario.password : usuario.password"
+                    [(ngModel)]="usuario.password"
+                    name="password"
+                    required 
+                    #password="ngModel"
+                    class="border p-2 w-full rounded-lg focus:ring-2 pr-12 mb-2"
+                    [class.border-red-500]="password.invalid && password.touched"
+                    [class.border-green-500]="password.valid"
+                    [placeholder]="password.invalid && password.touched ? 'Este campo es requerido' : 'Password'"
+                >
+            
+                <!-- Botón para alternar la visibilidad con icono bonito -->
+                <button 
+                    type="button" 
+                    (click)="togglePasswordVisibility()"
+                    class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+                >
+                    <span *ngIf="!mostrarPassword">🔒</span>
+                    <span *ngIf="mostrarPassword">🔓</span>
+                </button>
+            </div>
+
+            <!-- Buscar Persona -->
+            <div class="relative">
+                <div class="flex gap-2 mb-2">
+                    <input type="text" [(ngModel)]="nombrePersona" name="nombrePersona" required
+                        #nombrePersonaField="ngModel" class="border p-2 flex-grow rounded-lg focus:ring-2"
+                        [class.border-red-500]="nombrePersonaField.invalid && nombrePersonaField.touched"
+                        [class.border-green-500]="nombrePersonaField.valid"
+                        [placeholder]="nombrePersonaField.invalid && nombrePersonaField.touched ? 'Este campo es requerido' : 'Nombre de la persona'">
+
+                    <button (click)="buscarPersona()" type="button"
+                        class="bg-blue-600 text-white p-2 rounded-lg shadow-md hover:bg-blue-700">
+                        Buscar
+                    </button>
+
+                    <!-- Botón para limpiar búsqueda -->
+                    <button *ngIf="nombrePersona || personasEncontradas.length > 0" (click)="limpiarBusqueda()"
+                        class="bg-gray-300 text-gray-700 p-2 rounded-lg shadow-md hover:bg-gray-400">
+                        ✕
+                    </button>
+                </div>
+                <!-- Lista de personas encontradas -->
+                <div *ngIf="personasEncontradas.length > 0"
+                    class="absolute w-full bg-white border border-gray-300 rounded-lg shadow-md z-10">
+                    <ul>
+                        <li *ngFor="let persona of personasEncontradas" (click)="seleccionarPersona(persona)"
+                            class="p-2 hover:bg-blue-100 cursor-pointer rounded-lg transition-all">
+                            <span class="font-medium text-gray-700">
+                                {{ persona.nombre }} {{ persona.apellidoPaterno }} {{ persona.apellidoMaterno }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Botón para crear persona -->
+            <button type="button" (click)="abrirModalPersona()"
+                class="bg-blue-600 text-white p-2 rounded-lg w-full shadow-md hover:bg-blue-700 mb-2">
+                Crear Persona
+            </button>
+
+            <!-- Cargo -->
+            <select [(ngModel)]="usuario.cargo" name="cargo"
+                class="border border-gray-300 p-2 w-full rounded-lg focus:ring-2 focus:ring-blue-400 mb-2">
+                <option value="Admin">Admin</option>
+                <option value="Empleado">Empleado</option>
+                <option value="Cliente">Cliente</option>
+            </select>
+
+            <!-- Estado -->
+            <label class="flex items-center mb-4 text-gray-700">
+                <input type="checkbox" [(ngModel)]="usuario.estado" name="estado" class="mr-2 accent-green-600"> Activo
+            </label>
+
+            <!-- Botón Guardar -->
+            <button (click)="guardarUsuario()" type="submit" [disabled]="usuarioForm.invalid"
+                class="bg-green-600 text-white p-2 rounded-lg w-full shadow-md hover:bg-green-700 disabled:bg-gray-400">
+                Guardar
+            </button>
+
+            <button type="button" (click)="cerrarModal()"
+                class="text-red-500 mt-2 w-full font-semibold hover:underline">
+                Cancelar
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Persona -->
+<app-persona *ngIf="mostrarModalPersona" (personaCreada)="personaCreada($event)" (cerrar)="cerrarModalPersona()">
+</app-persona>

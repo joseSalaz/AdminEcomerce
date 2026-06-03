@@ -1,0 +1,37 @@
+<div class="p-4 bg-white rounded-lg shadow">
+    <!-- Header con filtros -->
+    <div class="flex flex-wrap justify-between items-center mb-4">
+      <div class="flex items-center space-x-4">
+        <div>
+          <label for="mes" class="block text-sm font-medium text-gray-700">Mes:</label>
+          <select 
+            id="mes" 
+            [(ngModel)]="mesSeleccionado" 
+            (change)="cargarDatos()"
+            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+            <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
+          </select>
+        </div>
+  
+        <div>
+          <label for="anio" class="block text-sm font-medium text-gray-700">Año:</label>
+          <select 
+            id="anio" 
+            [(ngModel)]="anioSeleccionado" 
+            (change)="cargarDatos()"
+            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+            <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Contenedor del gráfico -->
+    <div class="w-full h-[500px]">
+      <canvas baseChart 
+              [data]="chartData" 
+              [options]="chartOptions" 
+              [type]="'bar'">
+      </canvas>
+    </div>
+  </div>
