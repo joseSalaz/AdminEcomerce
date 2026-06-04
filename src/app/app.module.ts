@@ -28,6 +28,9 @@ import { PersonaComponent } from './bussines/profile/persona/persona.component';
 import { UsuarioComponent } from './bussines/profile/usuario/usuario.component';
 import { CommonModule } from '@angular/common';
 import { ProfileComponent } from './bussines/profile/profile.component';
+import { ListLibroComponent } from './bussines/tables/list-libro/list-libro.component';
+import { ListSubcategoriaComponent } from './bussines/tables/list-subcategoria/list-subcategoria.component';
+import { ListAutorComponent } from './bussines/tables/list-autor/list-autor.component';
 
 
 
@@ -51,7 +54,10 @@ import { ProfileComponent } from './bussines/profile/profile.component';
     GraficoVentasPorMesComponent,
     PersonaComponent,
     UsuarioComponent,
-    ProfileComponent
+    ProfileComponent,
+    ListLibroComponent,
+    ListSubcategoriaComponent,
+    ListAutorComponent
     
 
   ],

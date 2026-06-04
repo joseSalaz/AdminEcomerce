@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { LibroService } from '../../../service/libro.service';
 import { Router } from '@angular/router';
 import { Libro } from '../../../models/libro';
@@ -12,24 +12,28 @@ import { Autor } from '../../../models/autor';
 import { AutorService } from '../../../service/autor.service';
 import { Libroconautor } from '../../../models/libroConAutor';
 import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-mantenimiento-libro',
   templateUrl: './mantenimiento-libro.component.html',
   styleUrl: './mantenimiento-libro.component.scss'
 })
-export class MantenimientoLibroComponent {
+export class MantenimientoLibroComponent implements OnInit {
 
   showSuccessAlert: boolean = false;
   showErrorAlert: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
-  autores: Autor[] = [];
+  
+  // SE ELIMINÓ LA VARIABLE 'autores' REDUNDANTE
   autorSuggestions: Autor[] = [];
-  libroSeleccionado: Autor | null = null;  // Autor seleccionado
+  libroSeleccionado: Autor | null = null; 
   author: any = {};
   isAutorNotFound: boolean = false;
+
   @Output() close = new EventEmitter<void>();
   @Output() libroGuardado = new EventEmitter<void>();
+  
   autorNombre: string = '';
   imageUrl: string | ArrayBuffer | null = null;
   @Input() isEditMode: boolean = false;
@@ -43,24 +47,25 @@ export class MantenimientoLibroComponent {
     condicion: '',
     impresion: '',
     tipoTapa: '',
-    estado: true,
+    estado: true, 
     idSubcategoria: 0,
     idTipoPapel: 0,
     idProveedor: 0,
     imagen: '',
   };
-  autorSeleccionado: Autor | null = null;  // Autor seleccionado (completo)
+
+  autorSeleccionado: Autor | null = null; 
   @Input() precioVenta: number = 0;
   @Input() Stock: number = 0;
+  
   tiposPapel: TipoPapel[] = [];
   subCategoria: SubCategoria[] = [];
   provedor: Provedor[] = [];
-  autoresFiltrados: Autor[] = []; // Lista filtrada de autores
-  buscarAutor: string = ''; // Campo de búsqueda
+  autoresFiltrados: Autor[] = []; 
+  buscarAutor: string = ''; 
   imageFile: File | null = null;
   mostrarMensaje: boolean = false;
   mostrarModalCrearAutor: boolean = false;
-
 
   constructor(
     private libroService: LibroService,
@@ -75,50 +80,32 @@ export class MantenimientoLibroComponent {
     this.loadSubcategorias();
     this.loadTiposPapel();
     this.loadProveedores();
-    this.loadAutores();
+    
   }
 
-  // Método para recibir el autor seleccionado desde el componente hijo
   recibirAutor(autor: Autor): void {
-    this.autorSeleccionado = autor; // Recibe un 'Autor', no un 'Event'
+    this.autorSeleccionado = autor;
     console.log('Autor recibido:', autor);
   }
 
-
   loadSubcategorias(): void {
     this.subCategoriaService.getList().subscribe(
-      (data) => {
-        this.subCategoria = data;
-      },
+      (data) => this.subCategoria = data,
       (error) => console.error('Error al cargar subcategorías:', error)
     );
   }
 
   loadTiposPapel(): void {
     this.tipoPapelService.getTipoPapel().subscribe(
-      (data) => {
-        this.tiposPapel = data;
-      },
+      (data) => this.tiposPapel = data,
       (error) => console.error('Error al cargar tipos de papel:', error)
     );
   }
 
   loadProveedores(): void {
     this.provedorService.getProveedor().subscribe(
-      (data) => {
-        this.provedor = data;
-      },
+      (data) => this.provedor = data,
       (error) => console.error('Error al cargar proveedores:', error)
-    );
-  }
-
-
-  loadAutores(): void {
-    this.autorService.getAutores().subscribe(
-      (data) => {
-        this.autores = data; // Aquí asignamos la lista de autores a la variable
-      },
-      (error) => console.error('Error al cargar autores:', error)
     );
   }
 
@@ -127,7 +114,7 @@ export class MantenimientoLibroComponent {
       this.autorService.searchAutor(this.buscarAutor).subscribe(
         (data) => {
           this.autoresFiltrados = Array.isArray(data) ? data : [data];
-          this.mostrarMensaje = this.autoresFiltrados.length === 0; // Mostrar mensaje si no hay resultados
+          this.mostrarMensaje = this.autoresFiltrados.length === 0;
         },
         (error) => {
           console.error('Error al buscar autores:', error);
@@ -136,65 +123,47 @@ export class MantenimientoLibroComponent {
         }
       );
     } else {
-      this.mostrarMensaje = false; // No mostrar mensaje si no hay búsqueda
+      this.mostrarMensaje = false;
       this.autoresFiltrados = [];
     }
   }
 
-
-  // Método para abrir el modal de creación
   abrirCrearAutorModal(): void {
     this.mostrarModalCrearAutor = true;
   }
 
-  // Método para cerrar el modal
   cerrarCrearAutorModal(): void {
     this.mostrarModalCrearAutor = false;
   }
+
   recibirAutorCreado(autor: Autor): void {
-    console.log('Autor recibido:', autor); // Verificar el autor recibido
-
-    // Agregar el autor a la lista de autores
-    this.autoresFiltrados = [autor]; // Sobreescribe la lista con el autor recién creado
-
-    // Actualizar el campo de búsqueda con el nuevo autor
+    this.autoresFiltrados = [autor];
     this.buscarAutor = `${autor.nombre} ${autor.apellido}`;
-
-    // Cerrar el modal
     this.cerrarCrearAutorModal();
-
-    // Limpiar mensaje de "No se encontraron resultados"
-    this.mostrarMensaje = false; // Asegúrate de tener esta variable en tu lógica
+    this.mostrarMensaje = false;
   }
-
-
-
 
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input?.files?.length) {
       const file = input.files[0];
-      this.imageFile = file;  // Asignar el archivo a imageFile
+      this.imageFile = file;
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.imageUrl = e.target?.result as string;  // Mostrar la imagen seleccionada
+        this.imageUrl = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
 
-
-  // Función para eliminar la imagen y resetear el input
   removeImage() {
-    this.imageUrl = null; // Eliminar la imagen
+    this.imageUrl = null;
     const input = document.getElementById('imagen') as HTMLInputElement;
     if (input) {
-      input.value = ''; // Restablecer el valor del input de archivo
+      input.value = '';
     }
   }
-
-
 
   onSubmit(): void {
     const libroConAutorRequest: Libroconautor = {
@@ -211,14 +180,12 @@ export class MantenimientoLibroComponent {
         idSubcategoria: Number(this.libro.idSubcategoria),
         idTipoPapel: Number(this.libro.idTipoPapel),
         idProveedor: Number(this.libro.idProveedor),
-        imagen: '' // La URL de la imagen se establecerá en el backend
+        imagen: ''
       },
-      autor: this.autorSeleccionado || null // Permitir nulo
+      autor: this.autorSeleccionado || null
     };
 
     const formData = new FormData();
-
-    // Llenar los datos del libro
     formData.append('request.libro.idLibro', libroConAutorRequest.libro.idLibro?.toString() || '');
     formData.append('request.libro.titulo', libroConAutorRequest.libro.titulo || '');
     formData.append('request.libro.isbn', libroConAutorRequest.libro.isbn?.toString() || '');
@@ -232,7 +199,6 @@ export class MantenimientoLibroComponent {
     formData.append('request.libro.idTipoPapel', libroConAutorRequest.libro.idTipoPapel.toString());
     formData.append('request.libro.idProveedor', libroConAutorRequest.libro.idProveedor.toString());
 
-    // Llenar los datos del autor solo si existe
     if (libroConAutorRequest.autor) {
       formData.append('request.autor.idAutor', libroConAutorRequest.autor.idAutor.toString());
       formData.append('request.autor.nombre', libroConAutorRequest.autor.nombre || '');
@@ -240,69 +206,41 @@ export class MantenimientoLibroComponent {
       formData.append('request.autor.codigo', libroConAutorRequest.autor.codigo?.toString() || '');
       formData.append('request.autor.descripcion', libroConAutorRequest.autor.descripcion || '');
     } else {
-      // Si no hay autor, asegura que no se envían datos inválidos
       formData.append('request.autor', null as any);
     }
 
-    // Agregar imagen si existe
     if (this.imageFile) {
       formData.append('imageFile', this.imageFile, this.imageFile.name);
     }
 
-    // Validar si es creación o actualización
     if (this.libro.idLibro === 0) {
-      // Crear libro
       this.libroService.createLibro(formData, this.precioVenta, this.Stock).subscribe(
         (response) => {
-          alert('Libro creado correctamente');
-          const tituloCreado = response?.libro?.titulo || 'el libro';
-          Swal.fire({
-            title: "Creado Correctamente",
-            icon: "success",
-            draggable: true
-          });
+          Swal.fire({ title: "Creado Correctamente", icon: "success", draggable: true });
           this.onClose();
           this.libroGuardado.emit();
         },
         (error) => {
           console.error('Error al crear el libro:', error);
-          Swal.fire({
-            title: "No se pudo crear ",
-            icon: "error",
-            draggable: true
-          });
+          Swal.fire({ title: "No se pudo crear", icon: "error", draggable: true });
         }
       );
     } else {
-      // Actualizar libro
       this.libroService.updateLibro(formData, this.precioVenta, this.Stock).subscribe(
         (response) => {
-          Swal.fire({
-            title: "Actualizado Correctamente",
-            icon: "success",
-            draggable: true
-          });
+          Swal.fire({ title: "Actualizado Correctamente", icon: "success", draggable: true });
           this.onClose();
           this.libroGuardado.emit();
         },
         (error) => {
           console.error('Error al actualizar el libro:', error);
-          Swal.fire({
-            title: "Error! al Actualizar",
-            icon: "error",
-            draggable: true
-          });
+          Swal.fire({ title: "Error al Actualizar", icon: "error", draggable: true });
         }
       );
     }
   }
 
-
-
-
-  // Método para cerrar el modal
   onClose() {
-    // Restablecer alertas
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
     this.successMessage = '';
@@ -310,7 +248,6 @@ export class MantenimientoLibroComponent {
     this.precioVenta = 0;
     this.Stock = 0;
 
-    // Restablecer el libro a su estado inicial
     this.libro = {
       idLibro: 0,
       titulo: '',
@@ -327,20 +264,17 @@ export class MantenimientoLibroComponent {
       imagen: '',
     };
 
-    // Emitir evento de cierre
     this.close.emit();
   }
+
   abrirCrearNuevoAutor(): void {
-    this.autorSeleccionado = null; // Limpiar selección
-    this.isAutorNotFound = false; // Resetear estado
-    // Lógica para mostrar un formulario/modal para la creación
-    console.log('Abriendo formulario para crear autor...');
+    this.autorSeleccionado = null;
+    this.isAutorNotFound = false;
   }
 
-  // Método para seleccionar un autor
   seleccionarAutor(autor: Autor): void {
-    this.buscarAutor = `${autor.nombre} ${autor.apellido}`; // Actualiza el campo de búsqueda con el autor seleccionado
-    this.autorSeleccionado = autor; // Guarda el autor seleccionado
-    this.autoresFiltrados = []; // Limpia los resultados después de la selección
+    this.buscarAutor = `${autor.nombre} ${autor.apellido}`;
+    this.autorSeleccionado = autor;
+    this.autoresFiltrados = [];
   }
 }

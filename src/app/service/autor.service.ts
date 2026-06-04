@@ -20,7 +20,7 @@ export class AutorService {
     return this.http.get<any>(`${this.apiUrl}/GetByName`, { params });
   }
 
-  // Crear un nuevo autor
+  
   createAutor(autor: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, autor);
   }

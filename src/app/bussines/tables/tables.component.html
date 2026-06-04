@@ -1,176 +1,28 @@
-<div class="container mx-auto p-4">
-  <!-- Tabla de Libros -->
-  <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-    <h2 class="text-2xl font-bold mb-6 text-gray-800">Libros</h2>
-    <div class="flex gap-4">
-      <input [(ngModel)]="tituloBuscado" (keyup.enter)="buscar()" placeholder="Buscar por título"
-        class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500" />
+<div class="container mx-auto p-4 max-w-5xl">
 
-      <select [(ngModel)]="estadoSeleccionado" (change)="buscar()" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500">
-        <option [ngValue]="undefined">Todos</option>
-        <option [ngValue]="true">Activos</option>
-        <option [ngValue]="false">Inactivos</option>
-      </select>
-
-      <button (click)="buscar()" class="bg-blue-600 text-white p-2 rounded hover:bg-green-700 transition">🔍 Buscar</button>
-      <button (click)="mostrarTodos()" class="bg-gray-600 text-white p-2 rounded hover:bg-gray-700 transition">🔄 Mostrar Todos</button>
-    </div>
-    <div class="overflow-x-auto mt-4">
-      <table class="min-w-full bg-white border-collapse">
-        <thead>
-          <tr class="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
-            <th class="py-3 px-6 text-left">Título</th>
-            <th class="py-3 px-6 text-left">ISBN</th>
-            <th class="py-3 px-6 text-left">Impresión</th>
-            <th class="py-3 px-6 text-left">Estado</th>
-            <th class="py-3 px-6 text-left">Condición</th>
-            <th class="py-3 px-6 text-left">Imagen</th>
-            <th class="p-4 font-semibold">
-              <button (click)="openCreateModal()" class="text-green-600 hover:text-green-800">
-                ➕
-              </button>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="text-gray-700 text-sm font-light">
-          <tr *ngFor="let libro of libros" class="border-b border-gray-300 hover:bg-gray-100 transition">
-            <td class="py-4 px-6 text-left whitespace-nowrap">{{ libro.titulo }}</td>
-            <td class="py-4 px-6 text-left">{{ libro.isbn }}</td>
-            <td class="py-4 px-6 text-left">{{ libro.impresion }}</td>
-            <td class="py-4 px-6 text-left">
-              <span
-                class="px-2 py-1 text-xs font-semibold rounded-full {{ libro.estado ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800' }}">
-                {{ libro.estado ? 'Activo' : 'Inactivo' }}
-              </span>
-            </td>
-            <td class="py-4 px-6 text-left">{{ libro.condicion }}</td>
-            <td class="py-4 px-6 text-left">
-              <img src="{{ libro.imagen }}" alt="Imagen del libro" class="w-16 h-16 object-cover rounded-lg">
-            </td>
-            <td class="py-4 px-6 text-center">
-              <div class="flex justify-center space-x-4">
-                <button (click)="openEditModal(libro)" class="text-blue-600 hover:text-blue-800 transition">
-                  ✏️
-                </button>
-                <button (click)="deleteLibro(libro.idLibro)" class="text-red-500 hover:text-red-700 transition-all">
-                  🗑️
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Modal -->
-    <div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-      <div class="bg-white p-8 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">
-          {{ isEditMode ? 'Actualizar Libro' : 'Crear Libro' }}
-        </h2>
-        <app-mantenimiento-libro [isEditMode]="isEditMode"
-          [libro]="libroSeleccionado || { idLibro: 0, titulo: '', isbn: undefined, tamanno: '', descripcion: '', condicion: '', impresion: '', tipoTapa: '', estado: true, idSubcategoria: 0, idTipoPapel: 0, idProveedor: 0, imagen: '' }"
-          [precioVenta]="precioVenta" [Stock]="Stock" (close)="closeModal()"
-          (libroGuardado)="handleLibroGuardado()"></app-mantenimiento-libro>
-      </div>
-    </div>
-
-    <!-- Botones de paginación -->
-    <div class="flex justify-between items-center mt-6">
-      <button (click)="prevPage()" [disabled]="currentPage === 1"
-      class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-      ⬅️ Anterior
-      </button>
-      <span class="text-gray-700">Página {{ currentPage }}</span>
-      <button (click)="nextPage()"
-      class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-        Siguiente ➡️
-      </button>
-    </div>
-  </div>
-</div>
-
-
-<!-- Contenedor principal ajustado -->
-<div class="bg-white rounded-lg shadow-lg p-6 mb-6 overflow-x-auto max-w-3xl mx-auto">
-  <h2 class="text-2xl font-bold mb-6 text-gray-800">Sub Categorías</h2>
-  
-  <div class="flex gap-4 items-center mb-4">
-    <select [(ngModel)]="categoriaSeleccionada" (change)="buscar()"
-      class="border p-2 rounded w-full md:w-1/3 focus:ring-2 focus:ring-blue-400">
-      <option [ngValue]="undefined">Todas las categorías</option>
-      <option *ngFor="let categoria of categorias" [ngValue]="categoria.idCategoria">
-        {{ categoria.categoria1 }}
-      </option>
-    </select>
-  
-    <button (click)="buscarsub()" 
-      class="bg-blue-500 text-white p-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-all">
-      🔍 Buscar
+  <div class="flex space-x-6 border-b border-gray-200 mb-6 text-sm">
+    <button (click)="activeTab = 'libros'" 
+      [class]="activeTab === 'libros' ? 'text-blue-600 border-b-2 border-blue-600 pb-2 font-semibold transition-all' : 'text-gray-500 pb-2 hover:text-gray-800 transition-all'">
+      📖 Libros
+    </button>
+    <button (click)="activeTab = 'subcategorias'" 
+      [class]="activeTab === 'subcategorias' ? 'text-blue-600 border-b-2 border-blue-600 pb-2 font-semibold transition-all' : 'text-gray-500 pb-2 hover:text-gray-800 transition-all'">
+      📁 Subcategorías
+    </button>
+    <button (click)="activeTab = 'autores'" 
+      [class]="activeTab === 'autores' ? 'text-blue-600 border-b-2 border-blue-600 pb-2 font-semibold transition-all' : 'text-gray-500 pb-2 hover:text-gray-800 transition-all'">
+      🖋️ Autores
     </button>
   </div>
 
-  <div class="overflow-x-auto">
-    <table class="min-w-full bg-white border-collapse shadow-md rounded-lg">
-      <thead>
-        <tr class="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
-          <th class="py-3 px-6 text-left">ID</th>
-          <th class="py-3 px-6 text-left">Descripción</th>
-          <th class="py-3 px-6 text-left">Categoría</th>
-          <th class="p-4 text-center">
-            <button (click)="openSubcategoriaModal(false)" 
-              class="text-green-500 hover:text-green-700 transition-all">
-              ➕
-            </button>
-          </th>
-        </tr>
-      </thead>
-      <tbody class="text-gray-600 text-sm font-light">
-        <tr *ngFor="let subCategoria of subCategoriasPaginas"
-          class="border-b border-gray-300 hover:bg-gray-100 transition-all">
-          <td class="py-4 px-6">{{ subCategoria.id }}</td>
-          <td class="py-4 px-6">{{ subCategoria.descripcion }}</td>
-          <td class="py-4 px-6">{{ categoriasMap.get(subCategoria.idCategoria) }}</td>
-          <td class="py-4 px-6 text-center">
-            <div class="flex justify-center space-x-4">
-              <button (click)="openSubcategoriaModal(true, subCategoria)"
-                class="text-blue-500 hover:text-blue-700 transition-all">
-                ✏️
-              </button>
-              <button (click)="deleteSub(subCategoria.id)"
-                class="text-red-500 hover:text-red-700 transition-all">
-                🗑️
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div *ngIf="activeTab === 'libros'" class="animate-fade-in">
+    <app-list-libro></app-list-libro>
   </div>
 
-  <!-- Modal de subcategoría -->
-  <div *ngIf="isSubcategoriaModalOpen"
-    class="fixed inset-0 bg-gray-600 bg-opacity-50 backdrop-blur-md flex justify-center items-center z-50">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
-      <h2 class="text-2xl font-bold mb-6 text-gray-800">
-        {{ isEditSubcategoriaMode ? 'Actualizar Subcategoría' : 'Crear Subcategoría' }}
-      </h2>
-      <app-matenimiento-sub-categoria [isEditMode]="isEditSubcategoriaMode" [subcategoria]="subcategoriaSeleccionada"
-        (close)="closeSubcategoriaModal()"
-        (subcategoriaGuardada)="handleSubcategoriaGuardada()"></app-matenimiento-sub-categoria>
-    </div>
+  <div *ngIf="activeTab === 'subcategorias'" class="animate-fade-in">
+    <app-list-subcategoria></app-list-subcategoria>
   </div>
-
-  <!-- Botones de paginación -->
-  <div class="flex justify-between items-center mt-6">
-    <button (click)="prevPageSubCategorias()" [disabled]="currentPageSubCategorias === 1"
-      class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-      ⬅️ Anterior
-    </button>
-    <span class="text-gray-600">Página {{ currentPageSubCategorias }}</span>
-    <button (click)="nextPageSubCategorias()" [disabled]="currentPageSubCategorias * pageSize >= totalSubCategorias"
-      class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-      Siguiente ➡️
-    </button>
+<div *ngIf="activeTab === 'autores'" class="animate-fade-in">
+    <app-list-autor></app-list-autor>
   </div>
 </div>
