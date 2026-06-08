@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 })
 export class ListLibroComponent implements OnInit {
 
-  // Estado local e independiente para libros
+ // Estado local e independiente para libros
   libros: Libro[] = [];
   currentPage = 1;
   pageSize = 10;
@@ -32,10 +32,31 @@ export class ListLibroComponent implements OnInit {
   Stock: number = 0;
   precioVenta: number = 0;
 
+  // 🔥 Control indexado de acordeones de detalles abiertos (Estructura de tiempo constante O(1))
+  libroDetallesAbiertos: Set<number> = new Set<number>();
+
   constructor(private libroService: LibroService) {}
 
   ngOnInit() {
     this.getLibrosPaginados(this.currentPage);
+  }
+
+  // Identificador trackBy para mitigar renderizados repetitivos innecesarios del DOM interno
+  trackById(index: number, item: any): number {
+    return item.idLibro || index;
+  }
+
+  // Alternador del panel de detalles técnicos del libro
+  toggleDetalle(idLibro: number): void {
+    if (this.libroDetallesAbiertos.has(idLibro)) {
+      this.libroDetallesAbiertos.delete(idLibro);
+    } else {
+      this.libroDetallesAbiertos.add(idLibro);
+    }
+  }
+
+  isDetalleOpen(idLibro: number): boolean {
+    return this.libroDetallesAbiertos.has(idLibro);
   }
 
   getLibrosPaginados(page: number) {
@@ -56,26 +77,29 @@ export class ListLibroComponent implements OnInit {
   mostrarTodos(): void {
     this.tituloBuscado = '';
     this.estadoSeleccionado = undefined;
+    this.isDropdownEstadoOpen = false;
     this.currentPage = 1; 
+    this.libroDetallesAbiertos.clear(); // Limpia los detalles al reiniciar la vista
     this.getLibrosPaginados(this.currentPage); 
   }
   
   filtrarLibros(): void {
     this.libroService.filtrarLibros(this.estadoSeleccionado, this.tituloBuscado, this.currentPage, this.pageSize)
       .subscribe({
-        next: (response:any) => {
+        next: (response: any) => {
           this.libros = response.libros;
           this.totalItems = response.totalItems;
           this.totalPages = Math.ceil(this.totalItems / this.pageSize); 
           this.hasMoreData = this.libros.length === this.pageSize; 
         },
-        error: (error:any) => console.error('Error al obtener libros filtrados:', error)
+        error: (error: any) => console.error('Error al obtener libros filtrados:', error)
       });
   }
   
   nextPage() {
     if (this.hasMoreData) { 
       this.currentPage++;
+      this.libroDetallesAbiertos.clear(); // Previene bugs visuales de ID duplicados entre páginas
       if (this.tituloBuscado || this.estadoSeleccionado !== undefined) {
         this.filtrarLibros();
       } else {
@@ -87,6 +111,7 @@ export class ListLibroComponent implements OnInit {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.libroDetallesAbiertos.clear();
       if (this.tituloBuscado || this.estadoSeleccionado !== undefined) {
         this.filtrarLibros();
       } else {
@@ -143,10 +168,23 @@ export class ListLibroComponent implements OnInit {
         Swal.fire('¡Inactivo!', 'El libro cambió a inactivo', 'success');
         this.getLibrosPaginados(this.currentPage); 
       },
-      error: (error:any) => {
+      error: (error: any) => {
         console.error("Error al cambiar estado:", error);
         Swal.fire('Error', 'No se pudo cambiar el estado del libro', 'error');
       }
     });
   }
+
+  isDropdownEstadoOpen: boolean = false;
+
+// 2. Agrega estos métodos en el cuerpo de tu clase component
+toggleDropdownEstado(): void {
+  this.isDropdownEstadoOpen = !this.isDropdownEstadoOpen;
+}
+
+seleccionarEstado(valor: boolean | undefined): void {
+  this.estadoSeleccionado = valor;
+  this.isDropdownEstadoOpen = false; // Cierra el menú al elegir
+  this.buscar(); // Ejecuta tu filtro inmediatamente
+}
 }

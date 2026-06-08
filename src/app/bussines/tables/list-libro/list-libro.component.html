@@ -1,96 +1,247 @@
-<section class="shadow-sm">
-  <div class="bg-white rounded-t-xl border border-gray-200 border-b-0 p-6 flex flex-col md:flex-row justify-between items-center gap-4">
-    <h2 class="text-2xl font-bold text-gray-800">📚 Libros</h2>
-    
-    <div class="flex flex-col sm:flex-row w-full md:w-auto gap-3">
-      <div class="relative w-full sm:w-64">
-        <input [(ngModel)]="tituloBuscado" (keyup.enter)="buscar()" placeholder="Buscar título..."
-          class="w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
+<section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" style="will-change: transform;">
+
+  <div class="bg-slate-50 p-6 border-b border-slate-100">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-2xl font-black text-slate-800">📚 Libros</h2>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{{ libros.length }} libros
+            registrados</p>
+        </div>
       </div>
 
-      <select [(ngModel)]="estadoSeleccionado" (change)="buscar()" class="bg-gray-50 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option [ngValue]="undefined">Todos</option>
-        <option [ngValue]="true">Activos</option>
-        <option [ngValue]="false">Inactivos</option>
-      </select>
-      
-      <button (click)="mostrarTodos()" class="bg-gray-100 border border-gray-300 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all" title="Recargar todos">
-        🔄
-      </button>
+      <div class="flex flex-col sm:flex-row w-full md:w-auto gap-3 items-center">
 
-      <button (click)="openCreateModal()" class="bg-transparent border border-gray-300 text-gray-700 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
-        <span>+</span> Nuevo libro
-      </button>
+        <div class="relative w-full sm:w-64">
+          <input [(ngModel)]="tituloBuscado" (keyup.enter)="buscar()" placeholder="Buscar título..."
+            class="w-full bg-white border border-slate-200 text-slate-700 py-2.5 px-4 pr-10 rounded-xl focus:outline-none focus:border-blue-500 font-medium text-sm transition-colors shadow-sm" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" x2="16.65" y1="21" y2="16.65" />
+          </svg>
+        </div>
+
+        <div class="relative w-full sm:w-52 text-left">
+          <button type="button" (click)="toggleDropdownEstado()"
+            class="w-full bg-white border border-slate-200 text-slate-700 py-2.5 px-4 rounded-xl font-bold text-sm shadow-sm flex items-center justify-between hover:border-slate-300 transition-colors focus:outline-none">
+            <span class="flex items-center gap-2">
+              <span *ngIf="estadoSeleccionado === undefined">📋 Todos los estados</span>
+              <span *ngIf="estadoSeleccionado === true">🟢 Solo Activos</span>
+              <span *ngIf="estadoSeleccionado === false">🔴 Solo Inactivos</span>
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 transition-transform duration-200"
+              [ngClass]="{'rotate-180': isDropdownEstadoOpen}" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <div *ngIf="isDropdownEstadoOpen"
+            class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-xl py-1 divide-y divide-slate-50 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-100"
+            style="will-change: transform;">
+            <button type="button" (click)="seleccionarEstado(undefined)"
+              class="w-full px-4 py-2.5 text-left text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-2 transition-colors">
+              📋 Todos los estados
+            </button>
+            <button type="button" (click)="seleccionarEstado(true)"
+              class="w-full px-4 py-2.5 text-left text-sm font-bold text-emerald-600 hover:bg-emerald-50/50 flex items-center gap-2 transition-colors">
+              🟢 Solo Activos
+            </button>
+            <button type="button" (click)="seleccionarEstado(false)"
+              class="w-full px-4 py-2.5 text-left text-sm font-bold text-rose-600 hover:bg-rose-50/50 flex items-center gap-2 transition-colors">
+              🔴 Solo Inactivos
+            </button>
+          </div>
+        </div>
+
+        <button (click)="mostrarTodos()"
+          class="p-2.5 bg-slate-100 border border-slate-200 text-slate-500 rounded-xl hover:bg-slate-200 transition-colors shadow-sm"
+          title="Recargar todos">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polyline points="23 4 23 10 17 10" />
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+          </svg>
+        </button>
+
+        <button (click)="openCreateModal()"
+          class="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-blue-700 transition-colors shadow-sm">
+          Nuevo libro
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="bg-gray-50 p-4 md:p-6 rounded-b-xl border border-gray-200 flex flex-col gap-3">
-    
-    <div *ngIf="libros.length === 0" class="text-center py-8 text-gray-500">
-      No se encontraron libros.
+  <div class="p-6 bg-slate-50 flex flex-col gap-3">
+
+    <div *ngIf="libros.length === 0" class="text-center py-12 bg-white rounded-2xl border border-slate-200">
+      <h3 class="text-lg font-bold text-slate-700 mb-1">No se encontraron libros</h3>
+      <p class="text-sm text-slate-400 mb-4">Agrega tu primer registro técnico para comenzar.</p>
     </div>
 
-    <div *ngFor="let libro of libros" class="bg-white border border-gray-200 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-gray-400 hover:shadow-md transition-all group">
-      
-      <div class="flex items-center gap-4 w-full md:w-auto overflow-hidden">
-        <div class="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-gray-100 bg-gray-100 flex items-center justify-center">
-          <img *ngIf="libro.imagen" [src]="libro.imagen" alt="Imagen de {{ libro.titulo }}" class="w-full h-full object-cover">
-          <span *ngIf="!libro.imagen" class="text-2xl">📖</span>
+    <div *ngFor="let libro of libros; trackBy: trackById"
+      class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-4 hover:border-slate-400 transition-all shadow-sm">
+
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-4 w-full md:w-auto min-w-0">
+
+          <div
+            class="w-14 h-14 shrink-0 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center p-0.5">
+            <img *ngIf="libro.imagen" [src]="libro.imagen" [alt]="libro.titulo"
+              class="max-h-full max-w-full object-contain">
+            <span *ngIf="!libro.imagen" class="text-2xl">📖</span>
+          </div>
+
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="font-bold text-slate-800 text-base truncate" [title]="libro.titulo">
+              {{ libro.titulo }}
+            </span>
+            <div class="flex flex-wrap items-center gap-x-3 text-xs text-slate-400 font-medium mt-1">
+              <span class="text-slate-600 font-bold">ISBN: {{ libro.isbn || 'Sin ISBN' }}</span>
+              <span>•</span>
+              <span>Año/Edición: {{ libro.impresion || 'N/A' }}</span>
+              <span>•</span>
+              <span>Condición: {{ libro.condicion || 'N/A' }}</span>
+            </div>
+          </div>
         </div>
-        
-        <div class="flex flex-col truncate">
-          <span class="font-semibold text-gray-800 text-base truncate" [title]="libro.titulo">
-            {{ libro.titulo }}
+
+        <div
+          class="flex items-center justify-end gap-3 w-full md:w-auto border-t border-slate-100 md:border-none pt-3 md:pt-0">
+
+          <span class="px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full border"
+            [ngClass]="libro.estado ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'">
+            {{ libro.estado ? 'Activo' : 'Inactivo' }}
           </span>
-          <span class="text-sm text-gray-500 truncate">
-            {{ libro.isbn || 'Sin ISBN' }} • Impresión: {{ libro.impresion }} • Condición: {{ libro.condicion }}
-          </span>
+
+          <div class="flex gap-1">
+
+            <button (click)="toggleDetalle(libro.idLibro)"
+              class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              [title]="isDetalleOpen(libro.idLibro) ? 'Ocultar información técnica' : 'Desplegar información técnica'">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200"
+                [ngClass]="{'rotate-180 text-blue-600': isDetalleOpen(libro.idLibro)}" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+
+            <button (click)="openEditModal(libro)"
+              class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title="Editar">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </button>
+
+            <button (click)="deleteLibro(libro.idLibro)"
+              class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+              title="Eliminar">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                <line x1="10" x2="10" y1="11" y2="17" />
+                <line x1="14" x2="14" y1="11" y2="17" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="flex items-center justify-end gap-3 w-full md:w-auto mt-2 md:mt-0 pt-3 md:pt-0 border-t border-gray-100 md:border-none">
-        <span class="px-3 py-1 text-xs font-semibold rounded-full border {{ libro.estado ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200' }}">
-          {{ libro.estado ? 'Activo' : 'Inactivo' }}
-        </span>
-        
-        <div class="flex gap-1">
-          <button (click)="openEditModal(libro)" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Editar">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-          </button>
-          <button (click)="deleteLibro(libro.idLibro)" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Eliminar">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-          </button>
+      <div *ngIf="isDetalleOpen(libro.idLibro)"
+        class="border-t border-dashed border-slate-200 pt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs bg-slate-50/60 p-4 rounded-xl">
+
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Subcategoría / ID</p>
+          <p class="font-bold text-slate-700">Línea #{{ libro.idSubcategoria }}</p>
+        </div>
+
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Tipo Papel / ID</p>
+          <p class="font-bold text-slate-700">Variante #{{ libro.idTipoPapel }}</p>
+        </div>
+
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Formato Tapa</p>
+          <p class="font-bold text-slate-700">{{ libro.tipoTapa || 'No especificado' }}</p>
+        </div>
+
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Dimensiones</p>
+          <p class="font-bold text-slate-700">{{ libro.tamanno || 'No especificado' }}</p>
+        </div>
+
+        <div class="sm:col-span-2">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Proveedor ID Asociado</p>
+          <p class="font-semibold text-slate-600">ID Proveedor Jerárquico: #{{ libro.idProveedor }}</p>
+        </div>
+
+        <div class="sm:col-span-2">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Metadatos de Registro</p>
+          <p class="font-semibold text-slate-600">ID Interno del Sistema: {{ libro.idLibro }}</p>
+        </div>
+
+        <div class="md:col-span-4" *ngIf="libro.descripcion">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Sinopsis / Descripción del
+            Almacén</p>
+          <p class="font-medium text-slate-600 leading-relaxed bg-white p-3 rounded-lg border border-slate-200">{{
+            libro.descripcion }}</p>
         </div>
       </div>
+
     </div>
 
-    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+    <div *ngIf="libros.length > 0" class="flex justify-between items-center mt-5 pt-5 border-t border-slate-200">
       <button (click)="prevPage()" [disabled]="currentPage === 1"
-        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium">
-        ⬅️ Anterior
+        class="px-5 py-2.5 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold text-xs uppercase tracking-wider">
+        Anterior
       </button>
-      <span class="text-gray-600 font-medium text-sm">Página {{ currentPage }}</span>
+      <span class="px-4 py-2 bg-blue-50 text-blue-700 rounded-xl font-bold text-xs uppercase tracking-widest">
+        Página {{ currentPage }}
+      </span>
       <button (click)="nextPage()" [disabled]="!hasMoreData"
-        class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium">
-        Siguiente ➡️
+        class="px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed font-bold text-xs uppercase tracking-wider">
+        Siguiente
       </button>
     </div>
   </div>
 </section>
 
-<div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
-  <div class="bg-white p-8 rounded-xl shadow-2xl w-11/12 md:w-1/2 lg:w-1/3 max-h-screen overflow-y-auto">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-800">{{ isEditMode ? 'Actualizar Libro' : 'Crear Libro' }}</h2>
-      <button (click)="closeModal()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+<div *ngIf="isModalOpen" 
+     class="fixed inset-0 bg-slate-900/60 flex justify-center items-center z-50 p-4 transition-opacity duration-200">
+  
+  <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-4xl relative shadow-2xl flex flex-col h-auto max-h-[90vh]">
+    
+    <div class="px-6 py-4 flex justify-between items-center border-b border-slate-100 shrink-0">
+      <h2 class="text-lg font-black text-slate-800">
+        {{ isEditMode ? 'Actualizar Libro' : 'Crear Libro' }}
+      </h2>
+      <button (click)="closeModal()" 
+              class="text-slate-400 hover:text-slate-600 text-2xl leading-none focus:outline-none transition-colors">&times;</button>
     </div>
-    <app-mantenimiento-libro 
-      [isEditMode]="isEditMode"
-      [libro]="libroSeleccionado || { idLibro: 0, titulo: '', isbn: undefined, tamanno: '', descripcion: '', condicion: '', impresion: '', tipoTapa: '', estado: true, idSubcategoria: 0, idTipoPapel: 0, idProveedor: 0, imagen: '' }"
-      [precioVenta]="precioVenta" 
-      [Stock]="Stock" 
-      (close)="closeModal()"
-      (libroGuardado)="handleLibroGuardado()">
-    </app-mantenimiento-libro>
+
+    <div class="overflow-y-auto p-6 text-sm">
+      <app-mantenimiento-libro 
+        [isEditMode]="isEditMode"
+        [libro]="libroSeleccionado || { idLibro: 0, titulo: '', isbn: undefined, tamanno: '', descripcion: '', condicion: '', impresion: '', tipoTapa: '', estado: true, idSubcategoria: 0, idTipoPapel: 0, idProveedor: 0, imagen: '' }"
+        [precioVenta]="precioVenta" 
+        [Stock]="Stock" 
+        (close)="closeModal()" 
+        (libroGuardado)="handleLibroGuardado()">
+      </app-mantenimiento-libro>
+    </div>
+
   </div>
 </div>

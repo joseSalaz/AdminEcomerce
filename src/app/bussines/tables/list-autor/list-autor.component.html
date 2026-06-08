@@ -1,87 +1,95 @@
-<div class="p-6 bg-gray-50 min-h-screen">
-  
-  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 border border-gray-100">
+<div class="p-6 bg-slate-50/50 min-h-screen">
+  <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 p-6">
     
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-gray-200 gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Mantenimiento de Autores</h1>
-        <p class="text-sm text-gray-500 mt-1">Administra, busca, edita y registra nuevos autores en el sistema.</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-slate-100 gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Mantenimiento de Autores</h1>
+          <p class="text-sm text-slate-400 font-medium mt-0.5">Administra, busca, edita y registra nuevos autores en el sistema.</p>
+        </div>
       </div>
       
-      <button type="button" (click)="abrirModalCrear()" class="inline-flex items-center justify-center px-4 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-lg shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      <button type="button" (click)="abrirModalCrear()" class="inline-flex items-center justify-center px-5 py-3 bg-blue-600 text-white font-semibold text-sm rounded-xl shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all focus:outline-none">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
         </svg>
         Nuevo Autor
       </button>
     </div>
 
-    <div class="py-5 flex flex-col sm:flex-row gap-4 items-center">
-      <div class="relative w-full sm:max-w-md flex items-center">
-        <input type="text" [(ngModel)]="buscarTexto" (keyup.enter)="filtrarAutores()" placeholder="Buscar por nombre..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all" />
-        <div class="absolute left-3 text-gray-400">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+    <div class="py-5 flex flex-col sm:flex-row gap-3 items-center">
+      <div class="relative w-full sm:max-w-md flex items-center group">
+        <input type="text" [(ngModel)]="buscarTexto" (keyup.enter)="filtrarAutores()" placeholder="Buscar por nombre o apellido..." class="w-full pl-11 pr-4 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-medium text-slate-700 placeholder-slate-300 transition-all" />
+        <div class="absolute left-4 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
       </div>
-      <button type="button" (click)="filtrarAutores()" class="w-full sm:w-auto px-5 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition-colors focus:outline-none">
+      <button type="button" (click)="filtrarAutores()" class="w-full sm:w-auto px-6 py-2.5 bg-slate-800 text-white rounded-xl text-sm font-semibold hover:bg-slate-900 shadow-sm transition-colors focus:outline-none">
         Buscar
       </button>
-      <button type="button" *ngIf="buscarTexto" (click)="buscarTexto = ''; cargarAutores()" class="text-sm text-gray-500 hover:text-red-500 transition-colors">
+      <button type="button" *ngIf="buscarTexto" (click)="buscarTexto = ''; cargarAutores()" class="inline-flex items-center gap-1 text-sm font-semibold text-slate-400 hover:text-red-500 transition-colors px-2 py-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         Limpiar filtros
       </button>
     </div>
 
-    <div *ngIf="cargando" class="flex flex-col items-center justify-center py-12">
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-3"></div>
-      <p class="text-sm text-gray-500">Sincronizando información...</p>
+    <div *ngIf="cargando" class="flex flex-col items-center justify-center py-16 border border-slate-100 rounded-2xl bg-slate-50/30">
+      <div class="animate-spin rounded-full h-10 w-10 border-4 border-slate-200 border-b-blue-600 mb-4"></div>
+      <p class="text-sm font-semibold text-slate-400 tracking-wide uppercase">Sincronizando información...</p>
     </div>
 
     <div *ngIf="!cargando && autores.length > 0">
-      
-      <div class="overflow-x-auto rounded-lg border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200 text-left">
-          <thead class="bg-gray-50">
+      <div class="overflow-x-auto rounded-xl border-2 border-slate-100">
+        <table class="min-w-full divide-y divide-slate-100 text-left">
+          <thead class="bg-slate-50">
             <tr>
-              <th scope="col" class="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider w-24">Código</th>
-              <th scope="col" class="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nombre Completo</th>
-              <th scope="col" class="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th scope="col" class="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right w-36">Acciones</th>
+              <th scope="col" class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-28">Código</th>
+              <th scope="col" class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Nombre Completo</th>
+              <th scope="col" class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Descripción o Biografía</th>
+              <th scope="col" class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right w-40">Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let autor of autoresPaginados" class="hover:bg-gray-50/70 transition-colors">
+          <tbody class="bg-white divide-y divide-slate-100">
+            <tr *ngFor="let autor of autoresPaginados" class="hover:bg-slate-50/50 transition-colors group">
               
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-slate-500">
                 {{ autor.codigo || '—' }}
               </td>
               
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">
-                  {{ autor.nombre }} {{ autor.apellido }}
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                    {{ autor.nombre?.charAt(0) }}{{ autor.apellido?.charAt(0) }}
+                  </div>
+                  <div class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
+                    {{ autor.nombre }} {{ autor.apellido }}
+                  </div>
                 </div>
               </td>
               
               <td class="px-6 py-4">
-                <p class="text-sm text-gray-600 line-clamp-1 max-w-md" [title]="autor.descripcion">
+                <p class="text-sm text-slate-500 font-medium line-clamp-1 max-w-md" [title]="autor.descripcion">
                   {{ autor.descripcion || 'Sin descripción disponible.' }}
                 </p>
               </td>
               
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium gap-2">
-                <button type="button" (click)="abrirModalEditar(autor)" class="text-blue-600 hover:text-blue-900 mr-3 inline-flex items-center transition-colors">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                  Editar
-                </button>
-                <button type="button" (click)="eliminarAutor(autor)" class="text-red-600 hover:text-red-900 inline-flex items-center transition-colors">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                  </svg>
-                  Eliminar
-                </button>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div class="flex items-center justify-end gap-1">
+                  <button type="button" (click)="abrirModalEditar(autor)" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all" title="Editar Autor">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button type="button" (click)="eliminarAutor(autor)" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Eliminar Autor">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                </div>
               </td>
 
             </tr>
@@ -89,70 +97,85 @@
         </table>
       </div>
 
-      <div class="bg-white px-4 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-4">
+      <div class="bg-white py-4 flex items-center justify-between border-t border-slate-100 mt-4">
         <div class="flex-1 flex justify-between sm:hidden">
-          <button (click)="paginaAnterior()" [disabled]="paginaActual === 1" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          <button (click)="paginaAnterior()" [disabled]="paginaActual === 1" class="px-4 py-2 border-2 border-slate-200 text-sm font-semibold rounded-xl text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-40 transition-colors">
             Anterior
           </button>
-          <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas" class="px-4 py-2 border-2 border-slate-200 text-sm font-semibold rounded-xl text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-40 transition-colors">
             Siguiente
           </button>
         </div>
 
         <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div>
-            <p class="text-sm text-gray-700">
-              Mostrando página <span class="font-medium text-blue-600">{{ paginaActual }}</span> de <span class="font-medium text-gray-900">{{ totalPaginas || 1 }}</span> (<span class="font-medium text-gray-900">{{ autores.length }}</span> registros en total)
+            <p class="text-sm text-slate-400 font-medium">
+              Mostrando página <span class="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">{{ paginaActual }}</span> de <span class="font-bold text-slate-700">{{ totalPaginas || 1 }}</span> (<span class="text-slate-600 font-semibold">{{ autores.length }}</span> registros globales)
             </p>
           </div>
           <div>
-            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-              
-              <button (click)="paginaAnterior()" [disabled]="paginaActual === 1" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-                <span class="sr-only">Anterior</span>
-                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.303 3.303a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
+            <nav class="relative z-0 inline-flex rounded-xl shadow-sm border-2 border-slate-100 overflow-hidden" aria-label="Pagination">
+              <button (click)="paginaAnterior()" [disabled]="paginaActual === 1" class="relative inline-flex items-center px-3 py-2 bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-40 transition-colors border-r border-slate-100">
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.303 3.303a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
               </button>
-
-              <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-semibold text-blue-600 z-10">
+              <span class="relative inline-flex items-center px-4 py-2 bg-slate-50 text-sm font-bold text-slate-700 border-r border-slate-100">
                 {{ paginaActual }}
               </span>
-
-              <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-                <span class="sr-only">Siguiente</span>
-                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
+              <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas" class="relative inline-flex items-center px-3 py-2 bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-40 transition-colors">
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
               </button>
-
             </nav>
           </div>
         </div>
       </div>
-
     </div>
 
-    <div *ngIf="!cargando && autores.length === 0" class="text-center py-16 border border-dashed border-gray-300 rounded-lg bg-gray-50/50">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-      </svg>
-      <h3 class="mt-4 text-sm font-semibold text-gray-900">No se encontraron autores</h3>
-      <p class="mt-1 text-sm text-gray-500">Prueba ajustando el criterio de búsqueda o agrega un nuevo registro.</p>
-      <div class="mt-6">
-        <button type="button" (click)="abrirModalCrear()" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
-          Registrar Autor
+    <div *ngIf="!cargando && autores.length === 0" class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 flex flex-col items-center justify-center">
+      <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mb-4">
+        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+      </div>
+      <h3 class="text-base font-bold text-slate-700">No se encontraron autores</h3>
+      <p class="mt-1 text-sm text-slate-400 font-medium max-w-xs">Prueba modificando los criterios de búsqueda o agrega un registro nuevo desde cero.</p>
+      <div class="mt-5">
+        <button type="button" (click)="abrirModalCrear()" class="inline-flex items-center px-5 py-2.5 bg-slate-800 text-white font-semibold text-sm rounded-xl hover:bg-slate-900 shadow-sm transition-all">
+          Registrar Primer Autor
         </button>
       </div>
     </div>
 
   </div>
 </div>
+<div *ngIf="mostrarModalAutor" class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-4">
+  <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" (click)="cerrarModalAutor()"></div>
 
-<app-matenimiento-autor 
-  *ngIf="mostrarModalAutor" 
-  [autor]="autorSeleccionado"
-  [isEditMode]="esModoEdicion"
-  (autorCreado)="onAutorGuardado()" 
-  (cerrarModal)="cerrarModalAutor()">
-</app-matenimiento-autor>
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all overflow-hidden flex flex-col z-50 border border-slate-100">
+    
+    <div class="flex justify-between items-center px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center {{ esModoEdicion ? 'bg-amber-500/10 text-amber-600' : 'bg-blue-500/10 text-blue-600' }}">
+          <svg *ngIf="!esModoEdicion" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          <svg *ngIf="esModoEdicion" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-slate-800">{{ esModoEdicion ? 'Actualizar Autor' : 'Registrar Autor' }}</h2>
+          <p class="text-xs text-slate-400 font-medium">Información biográfica básica</p>
+        </div>
+      </div>
+      <button (click)="cerrarModalAutor()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="p-6 bg-white">
+      <app-matenimiento-autor 
+        [autor]="autorSeleccionado"
+        [isEditMode]="esModoEdicion"
+        (autorCreado)="onAutorGuardado()" 
+        (cerrarModal)="cerrarModalAutor()">
+      </app-matenimiento-autor>
+    </div>
+
+  </div>
+</div>

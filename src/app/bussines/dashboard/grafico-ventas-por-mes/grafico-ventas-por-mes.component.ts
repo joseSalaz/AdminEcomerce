@@ -7,8 +7,6 @@ import { DatoIngreso, IngresoMensual } from '../../../models/IngresoMensual';
 import { ChangeDetectorRef } from '@angular/core';
 import Swal from 'sweetalert2';
 
-
-
 @Component({
   selector: 'app-grafico-ventas-por-mes',
   templateUrl: './grafico-ventas-por-mes.component.html',
@@ -21,28 +19,62 @@ export class GraficoVentasPorMesComponent implements OnInit, OnDestroy {
     labels: [],
     datasets: [{
       data: [],
-      label: 'Ingresos Mensuales',
-      backgroundColor: 'rgba(75, 192, 192, 0.5)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1
+      label: 'Ingresos Netos',
+      backgroundColor: '#10b981', // Verde esmeralda moderno para ingresos financieros
+      hoverBackgroundColor: '#059669',
+      borderRadius: 8, // Barras redondeadas
+      borderSkipped: false,
+      borderWidth: 0
     }]
   };
 
   public chartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          boxWidth: 10,
+          boxHeight: 10,
+          usePointStyle: true,
+          font: {
+            size: 13,
+            weight: 'bold',
+            family: "'Inter', system-ui, sans-serif"
+          },
+          padding: 20
+        }
+      },
       tooltip: {
+        backgroundColor: '#1e293b',
+        titleFont: { family: "'Inter', sans-serif", size: 13 },
+        bodyFont: { family: "'Inter', sans-serif", size: 13 },
+        padding: 12,
+        cornerRadius: 10,
         callbacks: {
           label: function (context) {
-            let value = context.raw as number; // Convertimos explícitamente a número
-            return `S/. ${value.toFixed(2)}`;
+            let value = context.raw as number;
+            return ` Ingresos: S/. ${value.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
           }
         }
       }
     },
     scales: {
-      y: {
+      x: {
+        grid: { display: false },
         ticks: {
+          color: '#64748b',
+          font: { size: 11, family: "'Inter', sans-serif" }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: '#f1f5f9' },
+        ticks: {
+          color: '#64748b',
+          font: { size: 12, family: "'Inter', sans-serif" },
           callback: function (value) {
             return `S/. ${value}`;
           }
@@ -50,7 +82,6 @@ export class GraficoVentasPorMesComponent implements OnInit, OnDestroy {
       }
     }
   };
-  
 
   meses = [
     { nombre: 'Enero', valor: 1 }, { nombre: 'Febrero', valor: 2 },
@@ -68,9 +99,7 @@ export class GraficoVentasPorMesComponent implements OnInit, OnDestroy {
   mesFin: number;
   anioFin: number;
 
-  constructor(private ventasService: VentaService,
-    private cdr: ChangeDetectorRef
-  ) {
+  constructor(private ventasService: VentaService, private cdr: ChangeDetectorRef) {
     const today = new Date();
     this.mesInicio = today.getMonth() + 1;
     this.anioInicio = today.getFullYear();
@@ -99,17 +128,13 @@ export class GraficoVentasPorMesComponent implements OnInit, OnDestroy {
     const finDate = new Date(this.anioFin, this.mesFin - 1);
 
     if (finDate < inicioDate) {
-      Swal.fire(
-                    'Error',
-                    'La fecha final no puede ser anterior a la fecha inicial',
-                    'error'
-                  );
+      Swal.fire('Error', 'La fecha final no puede ser anterior a la fecha inicial', 'error');
       return;
     }
 
     this.ventasService.obtenerIngresosMensuales(
       `${fechaInicio}-01`,
-      `${fechaFin}-${new Date(this.anioFin, this.mesFin, 0).getDate()}` // Get last day of the month
+      `${fechaFin}-${new Date(this.anioFin, this.mesFin, 0).getDate()}`
     )
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -120,21 +145,23 @@ export class GraficoVentasPorMesComponent implements OnInit, OnDestroy {
               totalIngresos: Number(d.totalIngresos)
             })));
           } else {
-            console.error('Los datos recibidos no tienen el formato esperado:', datos);
+            console.error('Formato no esperado:', datos);
             this.mostrarGraficoVacio();
           }
         },
         error: (error) => {
-          console.error('Error al cargar los datos:', error);
+          console.error('Error al cargar datos:', error);
           this.mostrarGraficoVacio();
         }
       });
   }
 
-
   private mostrarGraficoVacio(): void {
-    this.chartData.labels = [];
-    this.chartData.datasets[0].data = [];
+    this.chartData = {
+      labels: [],
+      datasets: [{ ...this.chartData.datasets[0], data: [] }]
+    };
+    this.cdr.detectChanges();
   }
 
   private formatearEtiquetaMes(mesAnio: string): string {
@@ -148,35 +175,28 @@ export class GraficoVentasPorMesComponent implements OnInit, OnDestroy {
       this.mostrarGraficoVacio();
       return;
     }
-  
+
     datos.sort((a, b) => a.mesAnio.localeCompare(b.mesAnio));
-  
+
     this.chartData = {
       labels: datos.map(d => this.formatearEtiquetaMes(d.mesAnio)),
       datasets: [{
-        data: datos.map(d => d.totalIngresos),
-        label: 'Ingresos Mensuales',
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1
+        ...this.chartData.datasets[0],
+        data: datos.map(d => d.totalIngresos)
       }]
     };
-  
-    this.cdr.detectChanges(); // Forzar actualización del gráfico
+
+    this.cdr.detectChanges();
   }
-  
+
   obtenerMesMasVendido(): string {
     if (!this.chartData.datasets || this.chartData.datasets.length === 0) return 'N/A';
-  
     const dataset = this.chartData.datasets[0];
     if (!dataset.data || dataset.data.length === 0) return 'N/A';
-  
-    const dataValues = dataset.data as number[]; // Aseguramos que sea un array de números
+
+    const dataValues = dataset.data as number[];
     const maxIndex = dataValues.indexOf(Math.max(...dataValues));
-  
-    const labels = this.chartData.labels as string[]; // Convertimos a array de strings
+    const labels = this.chartData.labels as string[];
     return labels[maxIndex] ?? 'N/A';
   }
-  
-  
 }

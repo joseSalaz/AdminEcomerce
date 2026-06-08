@@ -91,6 +91,7 @@ get autoresPaginados(): Autor[] {
     this.autorSeleccionado = { idAutor: 0, nombre: '', apellido: '', codigo: undefined, descripcion: '' };
     this.esModoEdicion = false;
     this.mostrarModalAutor = true;
+    this.bloquearScroll(true);
   }
 
   // Abre el modal para editar un autor existente
@@ -98,11 +99,13 @@ get autoresPaginados(): Autor[] {
     this.autorSeleccionado = { ...autor }; 
     this.esModoEdicion = true;
     this.mostrarModalAutor = true;
+    this.bloquearScroll(true);
   }
 
   cerrarModalAutor(): void {
     this.mostrarModalAutor = false;
     this.autorSeleccionado = null;
+    this.bloquearScroll(false);
   }
 
   
@@ -123,10 +126,16 @@ get autoresPaginados(): Autor[] {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // servicio de eliminar 
-        // this.autorService.deleteAutor(autor.idAutor).subscribe(...)
         Swal.fire('Eliminado', 'El autor ha sido eliminado correctamente.', 'success');
       }
     });
+  }
+  // Método ayudante para controlar el body
+  private bloquearScroll(bloquear: boolean) {
+    if (bloquear) {
+      document.body.classList.add('overflow-hidden', 'md:pr-4'); 
+    } else {
+      document.body.classList.remove('overflow-hidden', 'md:pr-4');
+    }
   }
 }

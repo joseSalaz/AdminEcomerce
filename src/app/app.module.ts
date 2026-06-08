@@ -33,9 +33,6 @@ import { ListSubcategoriaComponent } from './bussines/tables/list-subcategoria/l
 import { ListAutorComponent } from './bussines/tables/list-autor/list-autor.component';
 
 
-
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -69,7 +66,8 @@ import { ListAutorComponent } from './bussines/tables/list-autor/list-autor.comp
     HttpClientModule,
     FormsModule,
     NgChartsModule,
-    CommonModule
+    CommonModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -66,7 +66,7 @@ export class MantenimientoLibroComponent implements OnInit {
   imageFile: File | null = null;
   mostrarMensaje: boolean = false;
   mostrarModalCrearAutor: boolean = false;
-
+  activeTab: 'libros' | 'subcategorias' | 'autores' = 'libros';
   constructor(
     private libroService: LibroService,
     private subCategoriaService: SubCategoriaService,

@@ -1,59 +1,136 @@
-<div class="p-6 bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">📊 Ingresos Mensuales</h2>
-  
-    <!-- Selección de Fechas -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div class="flex flex-col items-center">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Mes de Inicio</label>
-        <select [(ngModel)]="mesInicio" (change)="cargarDatos()"
-        class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
-          <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
-        </select>
-      </div>
-      
-      <div class="flex flex-col items-center">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Año de Inicio</label>
-        <select [(ngModel)]="anioInicio" (change)="cargarDatos()"
-        class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
-          <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
-        </select>
-      </div>
-  
-      <div class="flex flex-col items-center">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Mes de Fin</label>
-        <select [(ngModel)]="mesFin" (change)="cargarDatos()"
-               class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
-          <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
-        </select>
-      </div>
-      
-      <div class="flex flex-col items-center">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Año de Fin</label>
-        <select [(ngModel)]="anioFin" (change)="cargarDatos()"
-               class="p-2 text-sm border rounded-md w-full max-w-xs text-center">
-          <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
-        </select>
+<div class="p-4 sm:p-6 bg-slate-50/50 min-h-screen w-full">
+  <div class="w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-100 p-6 space-y-6">
+
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between pb-5 border-b border-slate-100 gap-4">
+      <div class="flex items-center gap-3.5">
+        <div
+          class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v18" />
+            <path d="M16 7h-4a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4h-4" />
+            <path d="M17 5H7" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">Reporte Analítico de Ingresos</h2>
+          <p class="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">Compara la evolución monetaria y analiza los
+            picos de recaudación por rangos de tiempo.</p>
+        </div>
       </div>
     </div>
-  
-    <!-- Gráfico -->
-    <div class="relative w-full h-96 bg-gray-50 p-4 rounded-lg shadow-inner flex justify-center items-center">
-      <canvas *ngIf="chartData?.datasets?.length && chartData.datasets[0].data.length > 0" 
-              baseChart
-              [data]="chartData"
-              [options]="chartOptions"
-              [type]="'bar'">
+
+    <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+      <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-3">Definir Rango del
+        Periodo</span>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Mes de Inicio</label>
+          <div class="relative flex items-center">
+            <select [(ngModel)]="mesInicio" (change)="cargarDatos()"
+              class="w-full pl-3 pr-10 py-2.5 text-sm font-semibold rounded-xl text-slate-700 bg-white border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer appearance-none">
+              <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
+            </select>
+            <div class="absolute right-3 pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Año de Inicio</label>
+          <div class="relative flex items-center">
+            <select [(ngModel)]="anioInicio" (change)="cargarDatos()"
+              class="w-full pl-3 pr-10 py-2.5 text-sm font-semibold rounded-xl text-slate-700 bg-white border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer appearance-none">
+              <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+            </select>
+            <div class="absolute right-3 pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Mes de Fin</label>
+          <div class="relative flex items-center">
+            <select [(ngModel)]="mesFin" (change)="cargarDatos()"
+              class="w-full pl-3 pr-10 py-2.5 text-sm font-semibold rounded-xl text-slate-700 bg-white border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer appearance-none">
+              <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
+            </select>
+            <div class="absolute right-3 pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Año de Fin</label>
+          <div class="relative flex items-center">
+            <select [(ngModel)]="anioFin" (change)="cargarDatos()"
+              class="w-full pl-3 pr-10 py-2.5 text-sm font-semibold rounded-xl text-slate-700 bg-white border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer appearance-none">
+              <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+            </select>
+            <div class="absolute right-3 pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="w-full h-[450px] bg-slate-50/40 rounded-2xl p-4 border border-slate-100 flex items-center justify-center relative">
+
+      <canvas *ngIf="chartData?.datasets?.[0]?.data?.length" baseChart [data]="chartData" [options]="chartOptions"
+        [type]="'bar'">
       </canvas>
-      <div *ngIf="!chartData?.datasets?.length || chartData.datasets[0].data.length === 0" 
-           class="text-gray-500 text-center">
-        No hay datos disponibles para el período seleccionado.
+
+      <div *ngIf="!chartData?.datasets?.[0]?.data?.length" class="text-center space-y-2 flex flex-col items-center">
+        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18" />
+            <path d="M10 18v-4" />
+            <path d="M14 18v-7" />
+            <path d="M18 18v-11" />
+          </svg>
+        </div>
+        <p class="text-sm font-semibold text-slate-500">Sin datos de recaudación</p>
+        <p class="text-xs text-slate-400 max-w-xs">No se encontraron transacciones registradas dentro del intervalo de
+          tiempo solicitado.</p>
       </div>
     </div>
-  
-    <!-- Conclusión -->
-    <div class="mt-6 p-4 bg-gray-100 rounded-lg text-center text-gray-800 font-semibold">
-      <p *ngIf="chartData.datasets[0].data.length > 0">
-        📌 El mes con más ventas es <span class="text-blue-600">{{ obtenerMesMasVendido() }}</span> 📈
+
+    <div *ngIf="chartData?.datasets?.[0]?.data?.length"
+      class="p-4 bg-emerald-50/60 border border-emerald-100 rounded-xl flex items-center gap-3">
+      <div
+        class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 7h-6l4 5l-4 5h6l4 -5z" />
+        </svg>
+      </div>
+      <p class="text-sm font-medium text-slate-700">
+        El pico comercial más alto se registró en el periodo:
+        <span
+          class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 ml-1">
+          {{ obtenerMesMasVendido() }}
+        </span>
       </p>
     </div>
+
   </div>
+</div>

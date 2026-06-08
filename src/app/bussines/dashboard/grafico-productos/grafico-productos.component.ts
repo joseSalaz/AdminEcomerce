@@ -19,10 +19,12 @@ export class GraficoProductosComponent implements OnInit {
     datasets: [
       {
         data: [],
-        label: 'Productos Más Vendidos del Mes',
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
+        label: 'Unidades Vendidas',
+        backgroundColor: '#2563eb', // Azul sólido moderno (Tailwind blue-600)
+        hoverBackgroundColor: '#1d4ed8', // Azul más oscuro al pasar el cursor
+        borderRadius: 10, // Esquinas superiores redondeadas en las barras
+        borderSkipped: false,
+        borderWidth: 0
       }
     ]
   };
@@ -35,25 +37,19 @@ export class GraficoProductosComponent implements OnInit {
         display: true,
         position: 'top',
         labels: {
+          boxWidth: 12,
+          boxHeight: 12,
+          usePointStyle: true,
           font: {
-            size: 12,
-            family: "'Arial', sans-serif"
+            size: 13,
+            weight: 'bold', 
+            family: "'Inter', system-ui, sans-serif"
           },
-          padding: 20
+          padding: 25
         }
       },
       title: {
-        display: true,
-        text: '',
-        font: {
-          size: 18,
-          weight: 'bold',
-          family: "'Arial', sans-serif"
-        },
-        padding: {
-          top: 10,
-          bottom: 30
-        }
+        display: false
       }
     },
     scales: {
@@ -62,34 +58,39 @@ export class GraficoProductosComponent implements OnInit {
           display: false
         },
         ticks: {
-          maxRotation: 45,
-          minRotation: 45,
+          autoSkip: false,     
+          maxRotation: 45,     
+          minRotation: 0,      
+          color: '#64748b',
           font: {
-            size: 11,
-            family: "'Arial', sans-serif"
+            size: 10,          
+            weight: 'normal',  
+            family: "'Inter', system-ui, sans-serif"
           },
-          padding: 5
+          padding: 10
         }
       },
       y: {
         beginAtZero: true,
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)'
+          color: '#f1f5f9'
         },
         ticks: {
+          color: '#64748b',
           font: {
             size: 12,
-            family: "'Arial', sans-serif"
-          }
+            family: "'Inter', system-ui, sans-serif"
+          },
+          padding: 10
         }
       }
     },
     layout: {
       padding: {
-        left: 15,
-        right: 15,
-        top: 15,
-        bottom: 15
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10
       }
     }
   };
@@ -106,19 +107,18 @@ export class GraficoProductosComponent implements OnInit {
   anios = [2023, 2024, 2025, 2026];
   mesSeleccionado!: number;
   anioSeleccionado!: number;
+  nombreMesActual: string = ''; // Nueva variable para pintar el título dinámico en el HTML
 
   constructor(private productosService: ProductosMasVendidosService) { }
 
   ngOnInit(): void {
-
     const fechaActual = new Date();
-    this.mesSeleccionado = fechaActual.getMonth() + 1; 
+    this.mesSeleccionado = fechaActual.getMonth() + 1;
     this.anioSeleccionado = fechaActual.getFullYear();
     this.cargarDatos();
   }
 
   cargarDatos() {
-
     const mesEncontrado = this.meses.find(m => m.valor === Number(this.mesSeleccionado));
 
     if (!mesEncontrado) {
@@ -126,24 +126,11 @@ export class GraficoProductosComponent implements OnInit {
       return;
     }
 
-    const mesNombre = mesEncontrado.nombre;
-
-    // Clonamos las opciones para que Angular detecte cambios
-    this.chartOptions = {
-      ...this.chartOptions,
-      plugins: {
-        ...this.chartOptions.plugins,
-        title: {
-          ...this.chartOptions.plugins?.title,
-          text: `Productos Más Vendidos - ${mesNombre} ${this.anioSeleccionado}`
-        }
-      }
-    };
+    this.nombreMesActual = mesEncontrado.nombre;
 
     this.productosService
       .obtenerProductosMasVendidos(this.mesSeleccionado, this.anioSeleccionado)
       .subscribe(data => {
-
         this.chartData = {
           ...this.chartData,
           labels: data.map(p => this.formatearTitulo(p.nombreProducto)),
@@ -154,17 +141,13 @@ export class GraficoProductosComponent implements OnInit {
             }
           ]
         };
-
       });
   }
 
-
-  // Método para formatear los títulos largos
   private formatearTitulo(titulo: string): string {
-    const maxLength = 30;
+    const maxLength = 20; // Reducido un poco para obligar al salto de línea y que use mejor el espacio horizontal expandido
     if (titulo.length <= maxLength) return titulo;
 
-    // Divide el título en palabras
     const palabras = titulo.split(' ');
     let resultado = '';
     let lineaActual = '';

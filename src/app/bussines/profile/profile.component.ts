@@ -13,7 +13,7 @@ export class ProfileComponent {
   usuarios: Usuario[] = [];
   mostrarModalUsuario = false; // Variable para el modal
   usuarioSeleccionado: any = null;
-  nombrePersona : string = "";
+  nombrePersona: string = "";
   constructor(private usuarioService: UsuarioService,
     private personaService: PersonaService
   ) { }
@@ -30,8 +30,8 @@ export class ProfileComponent {
         if (usuario.idPersona) {
           this.personaService.getbyId(usuario.idPersona).subscribe(persona => {
             usuario.nombrePersona = persona.nombre; // Suponiendo que el campo en la API es "nombre"
-            usuario.apellidoPaterno=persona.apellidoPaterno;
-            usuario.apellidoMaterno=persona.apellidoMaterno;
+            usuario.apellidoPaterno = persona.apellidoPaterno;
+            usuario.apellidoMaterno = persona.apellidoMaterno;
           });
         }
       });
@@ -40,16 +40,19 @@ export class ProfileComponent {
   openCreateModal() {
     this.usuario = {};
     this.mostrarModalUsuario = true;
+    this.bloquearScroll(true);
   }
 
   closeCreateModal() {
     this.mostrarModalUsuario = false;
+        this.bloquearScroll(false);
   }
 
-  
+
   openEditModal(usuario: any) {
     this.usuario = { ...usuario }; // ✅ Ahora usa directamente el usuario pasado
     this.mostrarModalUsuario = true;
+    this.bloquearScroll(true);
   }
 
   cambiarEstado(id: number, estadoActual: boolean) {
@@ -63,38 +66,45 @@ export class ProfileComponent {
       }
     });
   }
-
-  deleteSub(id: number) {
-      Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'Esta acción no se puede deshacer.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.usuarioService.delete(id).subscribe({
-            next: () => {
-              Swal.fire(
-                '¡Eliminado!',
-                'El Usuario a sido Eliminado',
-                'success'
-              );
-              this.obtenerUsuarios();
-            },
-            error: (error) => {
-              console.error("Error al eliminar:", error);
-              Swal.fire(
-                'Error',
-                'No se pudo eliminar al usuario.',
-                'error'
-              );
-            }
-          });
-        }
-      });
+  // Método ayudante para controlar el body
+  private bloquearScroll(bloquear: boolean) {
+    if (bloquear) {
+      document.body.classList.add('overflow-hidden', 'md:pr-4');
+    } else {
+      document.body.classList.remove('overflow-hidden', 'md:pr-4');
     }
+  }
+  deleteSub(id: number) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usuarioService.delete(id).subscribe({
+          next: () => {
+            Swal.fire(
+              '¡Eliminado!',
+              'El Usuario a sido Eliminado',
+              'success'
+            );
+            this.obtenerUsuarios();
+          },
+          error: (error) => {
+            console.error("Error al eliminar:", error);
+            Swal.fire(
+              'Error',
+              'No se pudo eliminar al usuario.',
+              'error'
+            );
+          }
+        });
+      }
+    });
+  }
 }

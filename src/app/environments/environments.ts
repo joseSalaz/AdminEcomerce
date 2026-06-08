@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    endPoint: 'http://api.libroapi.store/',
+    endPoint: 'https://api.libroapi.store/',
   };

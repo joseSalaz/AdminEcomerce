@@ -1,147 +1,378 @@
-<div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50 p-4">
+<div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50" (click)="onClose()"></div>
 
-  <div class="w-full max-w-5xl p-8 bg-white rounded-lg shadow-xl transform transition-all duration-300 overflow-y-auto max-h-[90vh] relative">
+<div class="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
+  <div class="w-full max-w-5xl bg-white rounded-2xl shadow-2xl transform transition-all duration-300 overflow-hidden h-auto max-h-[92vh] pointer-events-auto flex flex-col">
     
-    <button type="button" (click)="onClose()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-    </button>
-
-    <h2 class="text-3xl font-semibold mb-6 text-center text-gray-800">
-      {{ isEditMode ? 'Actualizar Libro' : 'Crear Libro' }}
-    </h2>
-
-    <div *ngIf="showSuccessAlert" class="mb-4 flex items-center p-4 bg-green-100 text-green-700 rounded-lg shadow-lg">
-      <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z"></path>
-      </svg>
-      <p class="text-sm">{{ successMessage }}</p>
-    </div>
-
-    <div *ngIf="showErrorAlert" class="mb-4 flex items-center p-4 bg-red-100 text-red-700 rounded-lg shadow-lg">
-      <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-.01-6a4 4 0 110 8a4 4 0 010-8zm0 0a8 8 0 100 16a8 8 0 000-16z"></path>
-      </svg>
-      <p class="text-sm">{{ errorMessage }}</p>
-    </div>
-
-    <form (ngSubmit)="onSubmit()" #libroForm="ngForm" class="grid grid-cols-1 md:grid-cols-3 gap-5">
-      
-      <div class="flex flex-col md:col-span-2">
-        <label for="titulo" class="block text-sm font-medium text-gray-600 mb-1">Título</label>
-        <input type="text" id="titulo" name="titulo" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="libro.titulo" required />
-      </div>
-
-      <div class="flex flex-col">
-        <label for="isbn" class="block text-sm font-medium text-gray-600 mb-1">ISBN</label>
-        <input type="text" id="isbn" name="isbn" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="libro.isbn" />
-      </div>
-
-      <div class="flex flex-col">
-        <label for="tamanno" class="block text-sm font-medium text-gray-600 mb-1">Tamaño</label>
-        <input type="text" id="tamanno" name="tamanno" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="libro.tamanno" />
-      </div>
-
-      <div class="relative flex flex-col">
-        <label for="buscarAutor" class="block text-sm font-medium text-gray-600 mb-1">Autor</label>
-        <div class="flex items-center">
-          <input type="text" id="buscarAutor" placeholder="Buscar autor..." [(ngModel)]="buscarAutor" [ngModelOptions]="{standalone: true}" class="flex-grow border border-gray-300 p-2.5 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
-          <button type="button" (click)="buscarAutores()" class="bg-blue-500 text-white px-3 py-2.5 rounded-r-md text-sm hover:bg-blue-600 focus:outline-none transition-colors">Buscar</button>
+    <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white shrink-0">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center {{ isEditMode ? 'bg-amber-500/10' : 'bg-blue-500/10' }}">
+          <svg *ngIf="!isEditMode" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          <svg *ngIf="isEditMode" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
         </div>
-        <ul *ngIf="autoresFiltrados.length > 0" class="absolute z-10 mt-14 w-full bg-white border border-gray-300 rounded-md max-h-40 overflow-y-auto shadow-lg">
-          <li *ngFor="let autor of autoresFiltrados" (click)="seleccionarAutor(autor)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
-            {{ autor.nombre }} {{ autor.apellido }}
-          </li>
-        </ul>
-        <p *ngIf="autoresFiltrados.length === 0 && buscarAutor.trim().length > 0 && mostrarMensaje" class="mt-1 text-xs text-gray-500">No se encontraron resultados.</p>
-        <button type="button" *ngIf="autoresFiltrados.length === 0 && buscarAutor.trim().length > 0 && mostrarMensaje" (click)="abrirCrearAutorModal()" class="mt-1 bg-green-500 text-white px-2 py-1 rounded-md text-xs hover:bg-green-600 focus:outline-none">Crear Autor</button>
+        <div>
+          <h2 class="text-2xl font-bold text-slate-800">{{ isEditMode ? 'Actualizar Libro' : 'Crear Nuevo Libro' }}</h2>
+          <p class="text-sm text-slate-500">{{ isEditMode ? 'Edita los datos del libro' : 'Completa la información del libro' }}</p>
+        </div>
       </div>
-      <app-matenimiento-autor *ngIf="mostrarModalCrearAutor" (autorCreado)="recibirAutorCreado($event)" (cerrarModal)="cerrarCrearAutorModal()"></app-matenimiento-autor>
+      <button type="button" (click)="onClose()" class="p-3 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
 
-      <div class="flex flex-col">
-        <label for="condicion" class="block text-sm font-medium text-gray-600 mb-1">Condición</label>
-        <input type="text" id="condicion" name="condicion" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="libro.condicion" />
+    <div *ngIf="showSuccessAlert" class="mx-8 mt-6 flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 shrink-0">
+      <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
       </div>
+      <p class="text-sm font-medium">{{ successMessage }}</p>
+    </div>
 
-      <div class="flex flex-col">
-        <label for="impresion" class="block text-sm font-medium text-gray-600 mb-1">Impresión</label>
-        <input type="text" id="impresion" name="impresion" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="libro.impresion" />
+    <div *ngIf="showErrorAlert" class="mx-8 mt-6 flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 shrink-0">
+      <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" x2="12" y1="8" y2="12"/>
+          <line x1="12" x2="12.01" y1="16" y2="16"/>
+        </svg>
       </div>
+      <p class="text-sm font-medium">{{ errorMessage }}</p>
+    </div>
 
-      <div class="flex flex-col">
-        <label for="tipoTapa" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Tapa</label>
-        <input type="text" id="tipoTapa" name="tipoTapa" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="libro.tipoTapa" />
-      </div>
-
-      <div class="flex flex-col">
-        <label for="estado" class="block text-sm font-medium text-gray-600 mb-1">Estado</label>
-        <select id="estado" name="estado" [(ngModel)]="libro.estado" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-          <option [ngValue]="true">Activo</option>
-          <option [ngValue]="false">Inactivo</option>
-        </select>
-      </div>
-
-      <div class="flex flex-col">
-        <label for="idSubcategoria" class="block text-sm font-medium text-gray-600 mb-1">Subcategoría</label>
-        <select id="idSubcategoria" [(ngModel)]="libro.idSubcategoria" name="idSubcategoria" required class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-          <option *ngFor="let sub of subCategoria" [value]="sub.id">{{ sub.descripcion }}</option>
-        </select>
-      </div>
-
-      <div class="flex flex-col">
-        <label for="idTipoPapel" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Papel</label>
-        <select id="idTipoPapel" [(ngModel)]="libro.idTipoPapel" name="idTipoPapel" required class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-          <option *ngFor="let tipo of tiposPapel" [value]="tipo.idTipoPapel">{{ tipo.descripcion }}</option>
-        </select>
-      </div>
-
-      <div class="flex flex-col">
-        <label for="idProveedor" class="block text-sm font-medium text-gray-600 mb-1">Proveedor</label>
-        <select id="idProveedor" [(ngModel)]="libro.idProveedor" name="idProveedor" required class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-          <option *ngFor="let prov of provedor" [value]="prov.idProveedor">{{ prov.razonSocial }}</option>
-        </select>
-      </div>
-
-      <div class="flex flex-col">
-        <label for="precioVenta" class="block text-sm font-medium text-gray-600 mb-1">Precio de Venta</label>
-        <input type="number" id="precioVenta" name="precioVenta" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="precioVenta" required />
-      </div>
-
-      <div class="flex flex-col">
-        <label for="Stock" class="block text-sm font-medium text-gray-600 mb-1">Stock</label>
-        <input type="number" id="Stock" name="Stock" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="Stock" required />
-      </div>
-
-      <div class="md:col-span-3 flex flex-col">
-        <label for="descripcion" class="block text-sm font-medium text-gray-600 mb-1">Descripción</label>
-        <textarea id="descripcion" name="descripcion" rows="2" class="border border-gray-300 p-2.5 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="libro.descripcion"></textarea>
-      </div>
-
-      <div *ngIf="imageUrl" class="md:col-span-3 flex flex-col items-center mt-2">
-        <label class="block text-sm font-medium text-gray-600 mb-1">Imagen Previsualizada</label>
-        <div class="w-full max-w-md h-48 bg-gray-100 rounded-md overflow-hidden relative flex items-center justify-center border border-gray-300">
-          <img [src]="imageUrl" alt="Previsualización" class="max-h-full max-w-full object-contain" />
-          <button type="button" (click)="removeImage()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 focus:outline-none transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    <div class="flex-1 overflow-y-auto px-8 py-6">
+      <form (ngSubmit)="onSubmit()" #libroForm="ngForm" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="flex flex-col md:col-span-2 group">
+          <label for="titulo" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
             </svg>
+            Título del Libro <span class="text-red-500 ml-1">*</span>
+          </label>
+          <input type="text" id="titulo" name="titulo" placeholder="Ingresa el título del libro"
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="libro.titulo" required />
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="isbn" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            ISBN
+          </label>
+          <input type="text" id="isbn" name="isbn" placeholder="978-3-16-148410-0"
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="libro.isbn" />
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="tamanno" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            </svg>
+            Tamaño
+          </label>
+          <input type="text" id="tamanno" name="tamanno" placeholder="15 x 21 cm"
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="libro.tamanno" />
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="condicion" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Condición
+          </label>
+          <input type="text" id="condicion" name="condicion" placeholder="Nuevo / Usado / Seminuevo"
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="libro.condicion" />
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="impresion" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Impresión
+          </label>
+          <input type="text" id="impresion" name="impresion" placeholder="1ra, 2da, 3ra..."
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="libro.impresion" />
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="tipoTapa" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="3" x2="21" y1="9" y2="9"/>
+            </svg>
+            Tipo de Tapa
+          </label>
+          <input type="text" id="tipoTapa" name="tipoTapa" placeholder="Dura / Blanda"
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="libro.tipoTapa" />
+        </div>
+
+        <div class="flex flex-col md:col-span-1 group relative">
+          <label for="buscarAutor" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            Autor
+          </label>
+          <div class="flex">
+            <input type="text" id="buscarAutor" placeholder="Buscar autor..." [(ngModel)]="buscarAutor" 
+              [ngModelOptions]="{standalone: true}" 
+              class="flex-grow border-2 border-r-0 border-slate-200 p-3.5 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm text-slate-700 placeholder-slate-300 font-medium" />
+            <button type="button" (click)="buscarAutores()" 
+              class="bg-blue-600 text-white px-5 rounded-r-xl text-sm font-medium hover:bg-blue-700 focus:outline-none transition-all border-2 border-blue-600 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+              </svg>
+              Buscar
+            </button>
+          </div>
+          
+          <ul *ngIf="autoresFiltrados.length > 0" 
+            class="absolute z-20 mt-16 w-full bg-white border-2 border-slate-200 rounded-xl shadow-xl max-h-52 overflow-y-auto">
+            <li *ngFor="let autor of autoresFiltrados" (click)="seleccionarAutor(autor)" 
+              class="px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm flex items-center gap-3 transition-colors border-b border-slate-100 last:border-b-0">
+              <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">
+                {{ autor.nombre?.charAt(0) }}{{ autor.apellido?.charAt(0) }}
+              </div>
+              <div>
+                <span class="font-medium text-slate-700">{{ autor.nombre }} {{ autor.apellido }}</span>
+              </div>
+            </li>
+          </ul>
+          
+          <p *ngIf="autoresFiltrados.length === 0 && buscarAutor.trim().length > 0 && mostrarMensaje" 
+            class="mt-2 text-sm text-slate-400 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" x2="12" y1="16" y2="12"/>
+              <line x1="12" x2="12.01" y1="8" y2="8"/>
+            </svg>
+            No se encontraron resultados.
+          </p>
+          <button type="button" *ngIf="autoresFiltrados.length === 0 && buscarAutor.trim().length > 0 && mostrarMensaje" 
+            (click)="abrirCrearAutorModal()" 
+            class="mt-2 flex items-center gap-2 bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-600 transition-all w-fit">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Crear Nuevo Autor
           </button>
         </div>
-      </div>
 
-      <div class="md:col-span-3 flex flex-col">
-        <label for="imagen" class="block text-sm font-medium text-gray-600 mb-1">Imagen</label>
-        <input type="file" id="imagen" name="imagen" class="border border-gray-300 block w-full text-sm focus:outline-none p-2 rounded-md bg-gray-50" (change)="onImageSelected($event)" />
-      </div>
+        <div class="flex flex-col group">
+          <label for="estado" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Estado
+          </label>
+          <div class="relative">
+            <select id="estado" name="estado" [(ngModel)]="libro.estado" 
+              class="appearance-none border-2 border-slate-200 p-3.5 pr-10 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all cursor-pointer font-bold text-slate-700 text-sm">
+              <option [ngValue]="true">🟢 Activo</option>
+              <option [ngValue]="false">🔴 Inactivo</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
 
-      <div class="md:col-span-3 flex justify-end gap-4 mt-4">
-        <button type="button" (click)="onClose()" class="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-colors">Cancelar</button>
-        <button type="submit" [disabled]="!libroForm.form.valid" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-400 transition-colors">
-          {{ isEditMode ? 'Actualizar' : 'Crear' }}
-        </button>
-      </div>
+        <div class="flex flex-col group">
+          <label for="idSubcategoria" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              <line x1="12" x2="12" y1="11" y2="17"/>
+              <line x1="9" x2="15" y1="14" y2="14"/>
+            </svg>
+            Subcategoría <span class="text-red-500 ml-1">*</span>
+          </label>
+          <div class="relative">
+            <select id="idSubcategoria" [(ngModel)]="libro.idSubcategoria" name="idSubcategoria" required 
+              class="appearance-none border-2 border-slate-200 p-3.5 pr-10 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all cursor-pointer font-semibold text-slate-700 text-sm">
+              <option value="" disabled selected class="text-slate-300">Seleccionar subcategoría</option>
+              <option *ngFor="let sub of subCategoria" [value]="sub.id">📁 {{ sub.descripcion }}</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
 
-    </form>
+        <div class="flex flex-col group">
+          <label for="idTipoPapel" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            Tipo de Papel <span class="text-red-500 ml-1">*</span>
+          </label>
+          <div class="relative">
+            <select id="idTipoPapel" [(ngModel)]="libro.idTipoPapel" name="idTipoPapel" required 
+              class="appearance-none border-2 border-slate-200 p-3.5 pr-10 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all cursor-pointer font-semibold text-slate-700 text-sm">
+              <option value="" disabled selected class="text-slate-300">Seleccionar tipo</option>
+              <option *ngFor="let tipo of tiposPapel" [value]="tipo.idTipoPapel">📄 {{ tipo.descripcion }}</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="idProveedor" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"/>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+            Proveedor <span class="text-red-500 ml-1">*</span>
+          </label>
+          <div class="relative">
+            <select id="idProveedor" [(ngModel)]="libro.idProveedor" name="idProveedor" required 
+              class="appearance-none border-2 border-slate-200 p-3.5 pr-10 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all cursor-pointer font-semibold text-slate-700 text-sm">
+              <option value="" disabled selected class="text-slate-300">Seleccionar proveedor</option>
+              <option *ngFor="let prov of provedor" [value]="prov.idProveedor">🏬 {{ prov.razonSocial }}</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="precioVenta" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" x2="12" y1="1" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            Precio de Venta <span class="text-red-500 ml-1">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-lg">S/</span>
+            <input type="number" id="precioVenta" name="precioVenta" placeholder="0.00" 
+              class="border-2 border-slate-200 p-3.5 pl-10 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+              [(ngModel)]="precioVenta" required />
+          </div>
+        </div>
+
+        <div class="flex flex-col group">
+          <label for="Stock" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" x2="12" y1="22.08" y2="12"/>
+            </svg>
+            Stock <span class="text-red-500 ml-1">*</span>
+          </label>
+          <input type="number" id="Stock" name="Stock" placeholder="0" min="0"
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="Stock" required />
+        </div>
+
+        <div class="flex flex-col md:col-span-3 group">
+          <label for="descripcion" class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="17" x2="10" y1="12" y2="12"/>
+              <line x1="7" x2="17" y1="12" y2="12"/>
+            </svg>
+            Descripción
+          </label>
+          <textarea id="descripcion" name="descripcion" rows="3" placeholder="Describe el contenido o características del libro..."
+            class="border-2 border-slate-200 p-3.5 w-full rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none text-slate-700 placeholder-slate-300 font-medium text-sm"
+            [(ngModel)]="libro.descripcion"></textarea>
+        </div>
+
+        <div *ngIf="imageUrl" class="md:col-span-3 flex flex-col items-center">
+          <label class="block text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wide">Imagen Previsualizada</label>
+          <div class="w-full max-w-sm h-56 bg-slate-100 rounded-2xl overflow-hidden relative flex items-center justify-center border-2 border-dashed border-slate-300">
+            <img [src]="imageUrl" alt="Previsualización" class="max-h-full max-w-full object-contain" />
+            <button type="button" (click)="removeImage()" 
+              class="absolute top-3 right-3 bg-red-500 text-white rounded-full p-2.5 hover:bg-red-600 transition-all shadow-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="md:col-span-3 flex flex-col">
+          <label class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            Imagen del Libro
+          </label>
+          <label for="imagen" class="border-2 border-dashed border-slate-300 p-8 w-full rounded-2xl text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all group">
+            <div class="flex flex-col items-center gap-3">
+              <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center group-hover:bg-blue-100 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-slate-400 group-hover:text-blue-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" x2="12" y1="3" y2="15"/>
+                </svg>
+              </div>
+              <div>
+                <span class="text-base font-medium text-slate-600 group-hover:text-blue-600 transition-colors">Arrastra una imagen o haz clic para seleccionar</span>
+                <p class="text-sm text-slate-400 mt-1">PNG, JPG hasta 5MB</p>
+              </div>
+            </div>
+            <input type="file" id="imagen" name="imagen" class="hidden" accept="image/*" (change)="onImageSelected($event)" />
+          </label>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="flex justify-end gap-3 px-8 py-5 border-t border-slate-100 bg-slate-50/50 shrink-0">
+      <button type="button" (click)="onClose()" 
+        class="flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-200 text-slate-600 rounded-xl font-medium hover:bg-slate-50 hover:border-slate-300 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+        Cancelar
+      </button>
+      <button type="submit" [disabled]="!libroForm.form.valid" (click)="onSubmit()"
+        class="flex items-center gap-2 px-7 py-3 {{ isEditMode ? 'bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/25' : 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/25' }} text-white rounded-xl font-medium focus:outline-none disabled:bg-slate-300 disabled:shadow-none transition-all cursor-pointer">
+        <svg *ngIf="!isEditMode" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        <svg *ngIf="isEditMode" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        {{ isEditMode ? 'Actualizar' : 'Crear Libro' }}
+      </button>
+    </div>
   </div>
 </div>
+
+<app-matenimiento-autor *ngIf="mostrarModalCrearAutor" 
+  (autorCreado)="recibirAutorCreado($event)" 
+  (cerrarModal)="cerrarCrearAutorModal()">
+</app-matenimiento-autor>

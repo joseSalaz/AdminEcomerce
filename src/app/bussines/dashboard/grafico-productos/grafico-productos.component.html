@@ -1,37 +1,75 @@
-<div class="p-4 bg-white rounded-lg shadow">
-    <!-- Header con filtros -->
-    <div class="flex flex-wrap justify-between items-center mb-4">
-      <div class="flex items-center space-x-4">
-        <div>
-          <label for="mes" class="block text-sm font-medium text-gray-700">Mes:</label>
-          <select 
-            id="mes" 
-            [(ngModel)]="mesSeleccionado" 
-            (change)="cargarDatos()"
-            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
-            <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
-          </select>
+<div class="p-4 sm:p-6 bg-slate-50/50 min-h-screen w-full">
+  <div class="w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-6 space-y-6">
+    
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between pb-5 border-b border-slate-100 gap-4">
+      
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18" />
+            <path d="M17 11.5a4.5 4.5 0 1 0 -4.5 4.5" />
+            <path d="M12 11.5v4.5" />
+            <path d="M12 11.5h4.5" />
+          </svg>
         </div>
-  
         <div>
-          <label for="anio" class="block text-sm font-medium text-gray-700">Año:</label>
-          <select 
-            id="anio" 
-            [(ngModel)]="anioSeleccionado" 
-            (change)="cargarDatos()"
-            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
-            <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
-          </select>
+          <h2 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
+            Top Productos Más Vendidos — <span class="text-blue-600">{{ nombreMesActual }} {{ anioSeleccionado }}</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">Volumen total de unidades distribuidas e impacto comercial por periodo.</p>
         </div>
       </div>
+
+      <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
+        
+        <div class="flex flex-col w-full sm:w-40">
+          <label for="mes" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Periodo Mensual</label>
+          <div class="relative flex items-center">
+            <select 
+              id="mes" 
+              [(ngModel)]="mesSeleccionado" 
+              (change)="cargarDatos()"
+              class="w-full pl-3 pr-10 py-2.5 text-sm font-semibold rounded-xl text-slate-700 bg-white border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer appearance-none">
+              <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nombre }}</option>
+            </select>
+            <div class="absolute right-3 pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col w-full sm:w-32">
+          <label for="anio" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Año Fiscal</label>
+          <div class="relative flex items-center">
+            <select 
+              id="anio" 
+              [(ngModel)]="anioSeleccionado" 
+              (change)="cargarDatos()"
+              class="w-full pl-3 pr-10 py-2.5 text-sm font-semibold rounded-xl text-slate-700 bg-white border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer appearance-none">
+              <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+            </select>
+            <div class="absolute right-3 pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  
-    <!-- Contenedor del gráfico -->
-    <div class="w-full h-[500px]">
-      <canvas baseChart 
-              [data]="chartData" 
-              [options]="chartOptions" 
-              [type]="'bar'">
-      </canvas>
+
+    <div class="w-full h-[550px] bg-slate-50/40 rounded-2xl p-4 sm:p-6 border border-slate-100">
+      <div class="w-full h-full">
+        <canvas baseChart 
+                [data]="chartData" 
+                [options]="chartOptions" 
+                [type]="'bar'">
+        </canvas>
+      </div>
     </div>
+
   </div>
+</div>

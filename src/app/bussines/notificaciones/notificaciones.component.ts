@@ -16,8 +16,8 @@ export class NotificacionesComponent implements OnInit {
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
-
-  constructor(private ventaService: VentaService) {}
+  mesesCargando: { [key: number]: boolean } = {};
+  constructor(private ventaService: VentaService) { }
 
   ngOnInit(): void {
     this.generarAniosDisponibles();
@@ -25,7 +25,7 @@ export class NotificacionesComponent implements OnInit {
 
   generarAniosDisponibles(): void {
     const anioInicio = this.anioActual - 5;
-    const anioFin = this.anioActual; 
+    const anioFin = this.anioActual;
     this.aniosDisponibles = [];
     for (let i = anioFin; i >= anioInicio; i--) {
       this.aniosDisponibles.push(i);
@@ -41,31 +41,42 @@ export class NotificacionesComponent implements OnInit {
   }
 
   descargarExcel(mes: number): void {
-    if (this.anioSeleccionado > this.anioActual || 
-        (this.anioSeleccionado === this.anioActual && mes > this.mesActual)) {
+    // 1. Usamos "mes" en lugar de "i"
+    this.mesesCargando[mes] = true;
+
+    if (this.anioSeleccionado > this.anioActual ||
+      (this.anioSeleccionado === this.anioActual && mes > this.mesActual)) {
+      this.mesesCargando[mes] = false; // Liberamos el botón si entra a la validación
       return;
     }
-    
+
     this.ventaService.generarReporteExcel(this.anioSeleccionado, mes + 1).subscribe({
       next: (response) => {
         const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Reporte_Ventas_${mes+1}_${this.anioSeleccionado}.xlsx`;
+        a.download = `Reporte_Ventas_${mes + 1}_${this.anioSeleccionado}.xlsx`;
         a.click();
         window.URL.revokeObjectURL(url);
+
+        // 2. Usamos "mes" para apagar el spinner al finalizar con éxito
+        this.mesesCargando[mes] = false;
       },
       error: (err) => {
         console.error('Error al generar reporte:', err);
-       Swal.fire(
-                           'Oops...',
-                           'Verifica si este mes tiene ventas',
-                           'warning'
-                         );
+
+        // 3. ¡IMPORTANTE! Apagamos el spinner también en caso de error
+        this.mesesCargando[mes] = false;
+
+        Swal.fire(
+          'Oops...',
+          'Verifica si este mes tiene ventas',
+          'warning'
+        );
       }
     });
-}
+  }
 
-  
+
 }

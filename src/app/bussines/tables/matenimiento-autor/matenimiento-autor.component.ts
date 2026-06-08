@@ -11,7 +11,7 @@ export class MatenimientoAutorComponent {
 
   @Output() autorCreado = new EventEmitter<Autor>(); // Emitir el autor creado
   @Output() cerrarModal = new EventEmitter<void>(); // Emitir evento para cerrar el modal
-
+  isEditMode: boolean =false;
   nuevoAutor: Autor = {
     idAutor: 0,
     nombre: '',
@@ -27,6 +27,7 @@ export class MatenimientoAutorComponent {
       apellido: this.nuevoAutor.apellido,
       codigo: this.nuevoAutor.codigo,
       descripcion: this.nuevoAutor.descripcion
+      
     };
 
     // Llamar al backend para guardar el autor
